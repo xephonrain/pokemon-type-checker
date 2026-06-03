@@ -1,0 +1,543 @@
+{
+  "my": [
+    {
+      "name": "ガブリアス",
+      "type1": "ドラゴン",
+      "type2": "じめん",
+      "nature": "しんちょう",
+      "ability": "さめはだ",
+      "moves": [
+        {
+          "type": "ドラゴン",
+          "name": "ドラゴンテール",
+          "_defaultType": "ドラゴン"
+        },
+        {
+          "type": "じめん",
+          "name": "じしん",
+          "_defaultType": "いわ"
+        },
+        {
+          "type": "いわ",
+          "name": "がんせきふうじ",
+          "_defaultType": "いわ"
+        },
+        {
+          "type": "なし",
+          "name": ""
+        }
+      ],
+      "hpSp": 26,
+      "atkSp": 8,
+      "atkNat": 0,
+      "defSp": 16,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": -1,
+      "spdSp": 16,
+      "spdNat": 1,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし",
+      "_open": true
+    },
+    {
+      "name": "ニンフィア",
+      "type1": "フェアリー",
+      "type2": "なし",
+      "nature": "ずぶとい",
+      "ability": "フェアリースキン",
+      "moves": [
+        {
+          "type": "フェアリー",
+          "name": "ハイパーボイス",
+          "_defaultType": "ノーマル"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 32,
+      "atkSp": 0,
+      "atkNat": -1,
+      "defSp": 32,
+      "defNat": 1,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 1,
+      "spdNat": 0,
+      "spdStatSp": 1,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし",
+      "_open": true
+    },
+    {
+      "name": "メガハッサム",
+      "type1": "むし",
+      "type2": "はがね",
+      "nature": "いじっぱり",
+      "ability": "テクニシャン",
+      "moves": [
+        {
+          "type": "はがね",
+          "name": "バレットパンチ",
+          "_defaultType": "はがね"
+        },
+        {
+          "type": "ひこう",
+          "name": "ダブルウイング",
+          "_defaultType": "ひこう"
+        },
+        {
+          "type": "むし",
+          "name": "とんぼがえり",
+          "_defaultType": "むし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 20,
+      "atkSp": 32,
+      "atkNat": 1,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": -1,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし",
+      "_open": true
+    },
+    {
+      "name": "メガカイリュー",
+      "type1": "ドラゴン",
+      "type2": "ひこう",
+      "nature": "おだやか",
+      "ability": "マルチスケイル",
+      "moves": [
+        {
+          "type": "ほのお",
+          "name": "かえんほうしゃ",
+          "_defaultType": "ほのお"
+        },
+        {
+          "type": "でんき",
+          "name": "１０まんボルト",
+          "_defaultType": "でんき"
+        },
+        {
+          "type": "こおり",
+          "name": "れいとうビーム",
+          "_defaultType": "こおり"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 32,
+      "atkSp": 0,
+      "atkNat": -1,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 14,
+      "spaNat": 0,
+      "spdSp": 20,
+      "spdNat": 1,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし",
+      "_open": true
+    },
+    {
+      "name": "メガゲンガー",
+      "type1": "ゴースト",
+      "type2": "どく",
+      "nature": "おくびょう",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "どく",
+          "name": "ヘドロウェーブ",
+          "_defaultType": "どく"
+        },
+        {
+          "type": "ゴースト",
+          "name": "シャドーボール",
+          "_defaultType": "ゴースト"
+        },
+        {
+          "type": "こおり",
+          "name": "こごえるかぜ",
+          "_defaultType": "こおり"
+        },
+        {
+          "type": "ノーマル",
+          "name": ""
+        }
+      ],
+      "hpSp": 2,
+      "atkSp": 0,
+      "atkNat": -1,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 32,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 32,
+      "spdStatNat": 1,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし",
+      "_open": true
+    },
+    {
+      "name": "ウォッシュロトムF",
+      "type1": "でんき",
+      "type2": "みず",
+      "nature": "おくびょう",
+      "ability": "ふゆう",
+      "moves": [
+        {
+          "type": "みず",
+          "name": "ハイドロポンプ"
+        },
+        {
+          "type": "でんき",
+          "name": "１０まんボルト",
+          "_defaultType": "でんき"
+        },
+        {
+          "type": "でんき",
+          "name": "ボルトチェンジ",
+          "_defaultType": "でんき"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 10,
+      "atkSp": 0,
+      "atkNat": -1,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 24,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 32,
+      "spdStatNat": 1,
+      "spdScarf": true,
+      "item": "スカーフ",
+      "immune1": "なし",
+      "immune2": "じめん",
+      "_open": true
+    }
+  ],
+  "enemy": [
+    {
+      "name": "メガミミロップ",
+      "type1": "ノーマル",
+      "type2": "かくとう",
+      "nature": "まじめ",
+      "ability": "ぶきよう",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "ギャラドス",
+      "type1": "みず",
+      "type2": "ひこう",
+      "nature": "まじめ",
+      "ability": "いかく",
+      "moves": [
+        {
+          "name": "たきのぼり",
+          "type": "みず"
+        },
+        {
+          "name": "じしん",
+          "type": "じめん"
+        },
+        {
+          "name": "こおりのキバ",
+          "type": "こおり"
+        },
+        {
+          "name": "パワーウィップ",
+          "type": "くさ"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "カバルドン",
+      "type1": "じめん",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "すなおこし",
+      "moves": [
+        {
+          "name": "じしん",
+          "type": "じめん"
+        },
+        {
+          "name": "",
+          "type": "なし"
+        },
+        {
+          "name": "",
+          "type": "なし"
+        },
+        {
+          "name": "",
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "ウォッシュロトムF",
+      "type1": "でんき",
+      "type2": "みず",
+      "nature": "まじめ",
+      "ability": "ふゆう",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "ギルガルド",
+      "type1": "はがね",
+      "type2": "ゴースト",
+      "nature": "まじめ",
+      "ability": "バトルスイッチ",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "ガブリアス",
+      "type1": "ドラゴン",
+      "type2": "じめん",
+      "nature": "まじめ",
+      "ability": "すながくれ",
+      "moves": [
+        {
+          "name": "じしん",
+          "type": "じめん"
+        },
+        {
+          "name": "げきりん",
+          "type": "ドラゴン"
+        },
+        {
+          "name": "がんせきふうじ",
+          "type": "いわ"
+        },
+        {
+          "name": "どくづき",
+          "type": "どく"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    }
+  ],
+  "customParties": [
+    {
+      "name": "メガハッサム軸",
+      "members": [
+        0,
+        1,
+        2
+      ],
+      "noSelect": false,
+      "enabled": true
+    },
+    {
+      "name": "メガゲンガー軸",
+      "members": [
+        0,
+        5,
+        4
+      ],
+      "noSelect": false,
+      "enabled": true
+    },
+    {
+      "name": "メガカイリュー軸",
+      "members": [
+        0,
+        1,
+        3
+      ],
+      "noSelect": false,
+      "enabled": true
+    },
+    {
+      "name": "メガ",
+      "members": [
+        2,
+        4,
+        3
+      ],
+      "noSelect": true,
+      "enabled": true
+    },
+    {
+      "name": "",
+      "members": [],
+      "noSelect": false,
+      "enabled": true
+    },
+    {
+      "name": "",
+      "members": [],
+      "noSelect": false,
+      "enabled": true
+    }
+  ]
+}
