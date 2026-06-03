@@ -1,20 +1,20 @@
 {
   "my": [
     {
-      "name": "",
-      "type1": "なし",
-      "type2": "なし",
+      "name": "ガブリアス",
+      "type1": "ドラゴン",
+      "type2": "じめん",
       "nature": "まじめ",
       "ability": "なし",
       "moves": [
         {
-          "type": "なし"
+          "type": "ドラゴン"
         },
         {
-          "type": "なし"
+          "type": "じめん"
         },
         {
-          "type": "なし"
+          "type": "いわ"
         },
         {
           "type": "なし"
@@ -27,24 +27,25 @@
       "defNat": 0,
       "spaSp": 0,
       "spaNat": 0,
-      "spdSp": 0,
+      "spdSp": 1,
       "spdNat": 0,
       "spdStatSp": 0,
       "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
       "immune1": "なし",
-      "immune2": "なし"
+      "immune2": "なし",
+      "_open": true
     },
     {
-      "name": "",
-      "type1": "なし",
+      "name": "ニンフィア",
+      "type1": "フェアリー",
       "type2": "なし",
       "nature": "まじめ",
       "ability": "なし",
       "moves": [
         {
-          "type": "なし"
+          "type": "フェアリー"
         },
         {
           "type": "なし"
@@ -63,30 +64,31 @@
       "defNat": 0,
       "spaSp": 0,
       "spaNat": 0,
-      "spdSp": 0,
+      "spdSp": 2,
       "spdNat": 0,
       "spdStatSp": 0,
       "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
       "immune1": "なし",
-      "immune2": "なし"
+      "immune2": "なし",
+      "_open": false
     },
     {
-      "name": "",
-      "type1": "なし",
-      "type2": "なし",
+      "name": "メガハッサム",
+      "type1": "むし",
+      "type2": "はがね",
       "nature": "まじめ",
       "ability": "なし",
       "moves": [
         {
-          "type": "なし"
+          "type": "むし"
         },
         {
-          "type": "なし"
+          "type": "はがね"
         },
         {
-          "type": "なし"
+          "type": "ひこう"
         },
         {
           "type": "なし"
@@ -99,30 +101,31 @@
       "defNat": 0,
       "spaSp": 0,
       "spaNat": 0,
-      "spdSp": 0,
+      "spdSp": 2,
       "spdNat": 0,
       "spdStatSp": 0,
       "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
       "immune1": "なし",
-      "immune2": "なし"
+      "immune2": "なし",
+      "_open": false
     },
     {
-      "name": "",
-      "type1": "なし",
-      "type2": "なし",
+      "name": "メガキラフロル",
+      "type1": "いわ",
+      "type2": "どく",
       "nature": "まじめ",
       "ability": "なし",
       "moves": [
         {
-          "type": "なし"
+          "type": "いわ"
         },
         {
-          "type": "なし"
+          "type": "どく"
         },
         {
-          "type": "なし"
+          "type": "くさ"
         },
         {
           "type": "なし"
@@ -135,30 +138,31 @@
       "defNat": 0,
       "spaSp": 0,
       "spaNat": 0,
-      "spdSp": 0,
-      "spdNat": 0,
+      "spdSp": 32,
+      "spdNat": 1,
       "spdStatSp": 0,
       "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
       "immune1": "なし",
-      "immune2": "なし"
+      "immune2": "なし",
+      "_open": false
     },
     {
-      "name": "",
-      "type1": "なし",
-      "type2": "なし",
+      "name": "メガゲンガー",
+      "type1": "ゴースト",
+      "type2": "どく",
       "nature": "まじめ",
       "ability": "なし",
       "moves": [
         {
-          "type": "なし"
+          "type": "ゴースト"
         },
         {
-          "type": "なし"
+          "type": "かくとう"
         },
         {
-          "type": "なし"
+          "type": "こおり"
         },
         {
           "type": "なし"
@@ -171,27 +175,28 @@
       "defNat": 0,
       "spaSp": 0,
       "spaNat": 0,
-      "spdSp": 0,
-      "spdNat": 0,
+      "spdSp": 32,
+      "spdNat": 1,
       "spdStatSp": 0,
       "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
       "immune1": "なし",
-      "immune2": "なし"
+      "immune2": "なし",
+      "_open": false
     },
     {
-      "name": "",
-      "type1": "なし",
-      "type2": "なし",
+      "name": "ウォッシュロトム",
+      "type1": "でんき",
+      "type2": "みず",
       "nature": "まじめ",
       "ability": "なし",
       "moves": [
         {
-          "type": "なし"
+          "type": "でんき"
         },
         {
-          "type": "なし"
+          "type": "みず"
         },
         {
           "type": "なし"
@@ -207,14 +212,15 @@
       "defNat": 0,
       "spaSp": 0,
       "spaNat": 0,
-      "spdSp": 0,
-      "spdNat": 0,
+      "spdSp": 32,
+      "spdNat": 1,
       "spdStatSp": 0,
       "spdStatNat": 0,
-      "spdScarf": false,
+      "spdScarf": true,
       "item": "なし",
       "immune1": "なし",
-      "immune2": "なし"
+      "immune2": "じめん",
+      "_open": false
     }
   ],
   "enemy": [
