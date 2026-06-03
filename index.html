@@ -34,6 +34,10 @@
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
     body{font-family:var(--font);background:var(--bg);color:var(--text);
       height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
+    /* iOS Safari対応: 100dvhが正しく機能しない場合のフォールバック */
+    @supports not (height: 100dvh) {
+      body{height:100vh;}
+    }
 
     /* ============================================================
        ヘッダー
@@ -63,8 +67,8 @@
     /* ============================================================
        タブコンテンツ
     ============================================================ */
-    #tab-content{flex:1;overflow:hidden;position:relative;min-height:0;}
-    .tab-panel{display:none;height:100%;flex-direction:column;}
+    #tab-content{flex:1;overflow:hidden;position:relative;min-height:0;background:var(--bg);}
+    .tab-panel{display:none;height:100%;flex-direction:column;background:var(--bg);}
     .tab-panel.active{display:flex;}
 
     /* ============================================================
@@ -458,29 +462,30 @@
 
   <!-- ========== 入力タブ ========== -->
   <div id="panel-input" class="tab-panel active" style="flex-direction:column;">
-    <!-- サブタブ -->
-    <div style="background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;">
+    <!-- サブタブ切替ボタン -->
+    <div id="inp-tab-bar" style="background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;">
       <button id="inp-tab-my"    class="co-mode-btn active" onclick="switchInputTab('my')">🔵 自分のパーティ</button>
       <button id="inp-tab-enemy" class="co-mode-btn"        onclick="switchInputTab('enemy')">🔴 相手のパーティ</button>
     </div>
-    <!-- 自分サブ -->
-    <div id="inp-sub-my" style="display:flex;flex-direction:column;flex:1;min-height:0;overflow-y:auto;padding-bottom:120px;">
-      <div class="section-hdr">
-        <span class="stitle">🔵 自分のチーム</span>
-        <button class="reset-btn" onclick="AppState.resetMy()">リセット</button>
-        <button class="reset-btn" onclick="collapseAllCards('my')">最小化</button>
-        <button class="reset-btn" style="background:rgba(255,203,5,0.12);border-color:#d4a800;color:#d4a800;" onclick="openCustomPartyModal()">選出カスタム</button>
+    <!-- スクロール領域（position:relativeの親に対してabsoluteで重ねる） -->
+    <div style="flex:1;min-height:0;position:relative;overflow:hidden;">
+      <div id="inp-sub-my" style="position:absolute;inset:0;overflow-y:auto;padding-bottom:20px;background:var(--bg);display:flex;flex-direction:column;">
+        <div class="section-hdr">
+          <span class="stitle">🔵 自分のチーム</span>
+          <button class="reset-btn" onclick="AppState.resetMy()">リセット</button>
+          <button class="reset-btn" onclick="collapseAllCards('my')">最小化</button>
+          <button class="reset-btn" style="background:rgba(255,203,5,0.12);border-color:#d4a800;color:#d4a800;" onclick="openCustomPartyModal()">選出カスタム</button>
+        </div>
+        <div id="my-team-list" style="padding:5px 6px;display:flex;flex-direction:column;gap:4px;"></div>
       </div>
-      <div id="my-team-list" style="padding:5px 6px;display:flex;flex-direction:column;gap:4px;"></div>
-    </div>
-    <!-- 相手サブ -->
-    <div id="inp-sub-enemy" style="display:none;flex-direction:column;flex:1;min-height:0;overflow-y:auto;padding-bottom:120px;">
-      <div class="section-hdr">
-        <span class="stitle">🔴 相手のチーム</span>
-        <button class="reset-btn" onclick="AppState.resetEnemy()">リセット</button>
-        <button class="reset-btn" onclick="collapseAllCards('enemy')">最小化</button>
+      <div id="inp-sub-enemy" style="position:absolute;inset:0;overflow-y:auto;padding-bottom:20px;background:var(--bg);display:none;flex-direction:column;">
+        <div class="section-hdr">
+          <span class="stitle">🔴 相手のチーム</span>
+          <button class="reset-btn" onclick="AppState.resetEnemy()">リセット</button>
+          <button class="reset-btn" onclick="collapseAllCards('enemy')">最小化</button>
+        </div>
+        <div id="enemy-team-list" style="padding:5px 6px;display:flex;flex-direction:column;gap:4px;"></div>
       </div>
-      <div id="enemy-team-list" style="padding:5px 6px;display:flex;flex-direction:column;gap:4px;"></div>
     </div>
   </div>
 
@@ -582,7 +587,7 @@
   </div><!-- /panel-battle2 -->
 
   <!-- ========== 素早さパネル (独立) ========== -->
-  <div id="panel-speed" class="tab-panel">
+  <div id="panel-speed" class="tab-panel" style="background:var(--bg);">
     <!-- サブタブ行（バトルと共通のヘッダー） -->
     <div style="background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;">
       <button class="co-mode-btn" onclick="switchMainTab('battle2');switchSubTab('battle2','battle')">⚔️ バトル相性</button>
@@ -595,7 +600,7 @@
         <span style="font-size:9px;color:var(--text-sub);">DB: <span id="spd-db-count"></span>体</span>
       </div>
     </div>
-    <div style="flex:1;overflow-y:auto;min-height:0;padding-bottom:90px;">
+    <div style="flex:1;overflow-y:auto;min-height:0;padding-bottom:20px;background:var(--bg);">
       <div style="border-bottom:1px solid var(--border);">
         <div id="spd-input-hdr" onclick="toggleSpdInput()"
           style="display:flex;align-items:center;padding:5px 10px;cursor:pointer;
@@ -627,14 +632,14 @@
   </div><!-- /panel-speed -->
 
   <!-- ========== ダメージ計算パネル (独立) ========== -->
-  <div id="panel-dmg" class="tab-panel">
+  <div id="panel-dmg" class="tab-panel" style="background:var(--bg);">
     <!-- サブタブ行 -->
     <div style="background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;">
       <button class="co-mode-btn" onclick="switchMainTab('battle2');switchSubTab('battle2','battle')">⚔️ バトル相性</button>
       <button class="co-mode-btn active">💥 ダメージ</button>
       <button class="co-mode-btn" onclick="switchMainTab('battle2');switchSubTab('battle2','speed')">⚡ 素早さ</button>
     </div>
-    <div style="flex:1;overflow-y:auto;min-height:0;padding-bottom:90px;">
+    <div style="flex:1;overflow-y:auto;min-height:0;padding-bottom:20px;background:var(--bg);">
       <div id="dmg-content" style="padding:6px 8px;"></div>
     </div>
   </div><!-- /panel-dmg -->
@@ -761,7 +766,7 @@
         </div>
         <div id="lt-poketype-tags" style="display:flex;gap:3px;flex-wrap:wrap;margin-top:5px;min-height:4px;"></div>
       </div>
-      <div style="flex:1;overflow-y:auto;min-height:0;padding-bottom:90px;">
+      <div style="flex:1;overflow-y:auto;min-height:0;padding-bottom:20px;background:var(--bg);">
         <div id="lt-poketype-content"></div>
       </div>
     </div>
@@ -809,20 +814,8 @@
       <div id="lt-spdlist-scroll" style="flex:1;overflow-y:auto;min-height:0;"></div>
     </div>
     <!-- ========== ダメージ計算ビュー ========== -->
-    <div id="lt-ltdmg-view" style="display:none;flex-direction:column;flex:1;min-height:0;overflow-y:auto;padding-bottom:90px;">
+    <div id="lt-ltdmg-view" style="display:none;flex-direction:column;flex:1;min-height:0;overflow-y:auto;padding-bottom:20px;background:var(--bg);">
       <div id="lt-dmg-content" style="padding:6px 8px;"></div>
-    </div>
-  </div>
-      <div id="builder-poke-btns" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
-    </div>
-    <!-- スクロールエリア -->
-    <div style="flex:1;overflow-y:auto;min-height:0;padding:0 0 20px;">
-      <!-- 相性表 -->
-      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
-        <div id="builder-table-wrap"></div>
-      </div>
-      <!-- 集計パネル -->
-      <div id="builder-summary" style="padding:6px 8px;"></div>
     </div>
   </div>
 
@@ -2153,8 +2146,16 @@ function deleteSlot(i) {
 }
 
 // ============================================================
-// ============================================================
-// GitHub API 連携（複数セーブ対応）
+// ビューポート高さを動的にセット（iOS Safari対応）
+function setVh() {
+  const vh = window.innerHeight;
+  document.body.style.height = vh + 'px';
+}
+setVh();
+window.addEventListener('resize', setVh);
+window.addEventListener('orientationchange', () => setTimeout(setVh, 100));
+
+
 // ============================================================
 const GH_STORAGE_KEY = 'pkmn_gh_config';
 const GH_SAVES_DIR   = 'saves';
@@ -2643,7 +2644,8 @@ function switchInputTab(side) {
   ['my','enemy'].forEach(s => {
     document.getElementById(`inp-tab-${s}`)?.classList.toggle('active', s===side);
     const p = document.getElementById(`inp-sub-${s}`);
-    if(p) p.style.display = s===side ? 'flex' : 'none';
+    if(!p) return;
+    p.style.display = s===side ? 'flex' : 'none';
   });
 }
 
