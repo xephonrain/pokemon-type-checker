@@ -183,13 +183,13 @@
         },
         {
           "type": "ゴースト",
-          "name": "たたりめ",
+          "name": "シャドーボール",
           "_defaultType": "ゴースト"
         },
         {
-          "type": "ほのお",
-          "name": "",
-          "_defaultType": "ゴースト"
+          "type": "こおり",
+          "name": "こごえるかぜ",
+          "_defaultType": "こおり"
         },
         {
           "type": "ノーマル",
@@ -211,7 +211,7 @@
       "item": "なし",
       "immune1": "なし",
       "immune2": "なし",
-      "_open": false
+      "_open": true
     },
     {
       "name": "ウォッシュロトムF",
