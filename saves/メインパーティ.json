@@ -1,0 +1,476 @@
+{
+  "my": [
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    }
+  ],
+  "enemy": [
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    },
+    {
+      "name": "",
+      "type1": "なし",
+      "type2": "なし",
+      "nature": "まじめ",
+      "ability": "なし",
+      "moves": [
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
+        }
+      ],
+      "hpSp": 0,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 0,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし"
+    }
+  ],
+  "customParties": [
+    {
+      "name": "",
+      "members": [],
+      "noSelect": false,
+      "enabled": true
+    },
+    {
+      "name": "",
+      "members": [],
+      "noSelect": false,
+      "enabled": true
+    },
+    {
+      "name": "",
+      "members": [],
+      "noSelect": false,
+      "enabled": true
+    },
+    {
+      "name": "",
+      "members": [],
+      "noSelect": false,
+      "enabled": true
+    },
+    {
+      "name": "",
+      "members": [],
+      "noSelect": false,
+      "enabled": true
+    },
+    {
+      "name": "",
+      "members": [],
+      "noSelect": false,
+      "enabled": true
+    }
+  ]
+}
