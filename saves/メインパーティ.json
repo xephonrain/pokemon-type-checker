@@ -476,27 +476,43 @@
   ],
   "customParties": [
     {
-      "name": "",
-      "members": [],
+      "name": "メガハッサム軸",
+      "members": [
+        0,
+        1,
+        2
+      ],
       "noSelect": false,
       "enabled": true
     },
     {
-      "name": "",
-      "members": [],
+      "name": "メガゲンガー軸",
+      "members": [
+        0,
+        5,
+        4
+      ],
       "noSelect": false,
       "enabled": true
     },
     {
-      "name": "",
-      "members": [],
+      "name": "メガカイリュー軸",
+      "members": [
+        0,
+        1,
+        3
+      ],
       "noSelect": false,
       "enabled": true
     },
     {
-      "name": "",
-      "members": [],
-      "noSelect": false,
+      "name": "メガ",
+      "members": [
+        2,
+        4,
+        3
+      ],
+      "noSelect": true,
       "enabled": true
     },
     {
