@@ -4,7 +4,7 @@
       "name": "ガブリアス",
       "type1": "ドラゴン",
       "type2": "じめん",
-      "nature": "ようき",
+      "nature": "しんちょう",
       "ability": "さめはだ",
       "moves": [
         {
@@ -27,22 +27,22 @@
           "name": ""
         }
       ],
-      "hpSp": 2,
-      "atkSp": 0,
+      "hpSp": 26,
+      "atkSp": 8,
       "atkNat": 0,
-      "defSp": 10,
+      "defSp": 16,
       "defNat": 0,
       "spaSp": 0,
       "spaNat": -1,
-      "spdSp": 12,
-      "spdNat": 0,
-      "spdStatSp": 32,
-      "spdStatNat": 1,
+      "spdSp": 16,
+      "spdNat": 1,
+      "spdStatSp": 0,
+      "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
       "immune1": "なし",
       "immune2": "なし",
-      "_open": false
+      "_open": true
     },
     {
       "name": "ニンフィア",
@@ -130,7 +130,7 @@
       "name": "メガカイリュー",
       "type1": "ドラゴン",
       "type2": "ひこう",
-      "nature": "ひかえめ",
+      "nature": "おだやか",
       "ability": "マルチスケイル",
       "moves": [
         {
@@ -152,16 +152,16 @@
           "type": "なし"
         }
       ],
-      "hpSp": 31,
+      "hpSp": 32,
       "atkSp": 0,
       "atkNat": -1,
       "defSp": 12,
       "defNat": 0,
-      "spaSp": 22,
-      "spaNat": 1,
-      "spdSp": 1,
-      "spdNat": 0,
-      "spdStatSp": 1,
+      "spaSp": 14,
+      "spaNat": 0,
+      "spdSp": 0,
+      "spdNat": 1,
+      "spdStatSp": 0,
       "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
