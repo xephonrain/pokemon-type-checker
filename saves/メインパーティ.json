@@ -4,32 +4,78 @@
       "name": "ガブリアス",
       "type1": "ドラゴン",
       "type2": "じめん",
-      "nature": "まじめ",
-      "ability": "なし",
+      "nature": "ようき",
+      "ability": "さめはだ",
       "moves": [
         {
-          "type": "ドラゴン"
+          "type": "ドラゴン",
+          "name": "ドラゴンテール",
+          "_defaultType": "ドラゴン"
         },
         {
-          "type": "じめん"
+          "type": "じめん",
+          "name": "じしん",
+          "_defaultType": "いわ"
         },
         {
-          "type": "いわ"
+          "type": "いわ",
+          "name": "いわなだれ",
+          "_defaultType": "いわ"
+        },
+        {
+          "type": "なし",
+          "name": ""
+        }
+      ],
+      "hpSp": 2,
+      "atkSp": 0,
+      "atkNat": 0,
+      "defSp": 10,
+      "defNat": 0,
+      "spaSp": 0,
+      "spaNat": -1,
+      "spdSp": 12,
+      "spdNat": 0,
+      "spdStatSp": 32,
+      "spdStatNat": 1,
+      "spdScarf": false,
+      "item": "なし",
+      "immune1": "なし",
+      "immune2": "なし",
+      "_open": false
+    },
+    {
+      "name": "ニンフィア",
+      "type1": "フェアリー",
+      "type2": "なし",
+      "nature": "ずぶとい",
+      "ability": "フェアリースキン",
+      "moves": [
+        {
+          "type": "フェアリー",
+          "name": "ハイパーボイス",
+          "_defaultType": "ノーマル"
+        },
+        {
+          "type": "なし"
+        },
+        {
+          "type": "なし"
         },
         {
           "type": "なし"
         }
       ],
-      "hpSp": 0,
+      "hpSp": 32,
       "atkSp": 0,
-      "atkNat": 0,
-      "defSp": 0,
-      "defNat": 0,
+      "atkNat": -1,
+      "defSp": 32,
+      "defNat": 1,
       "spaSp": 0,
       "spaNat": 0,
       "spdSp": 1,
       "spdNat": 0,
-      "spdStatSp": 0,
+      "spdStatSp": 1,
       "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
@@ -38,147 +84,129 @@
       "_open": true
     },
     {
-      "name": "ニンフィア",
-      "type1": "フェアリー",
-      "type2": "なし",
-      "nature": "まじめ",
-      "ability": "なし",
-      "moves": [
-        {
-          "type": "フェアリー"
-        },
-        {
-          "type": "なし"
-        },
-        {
-          "type": "なし"
-        },
-        {
-          "type": "なし"
-        }
-      ],
-      "hpSp": 0,
-      "atkSp": 0,
-      "atkNat": 0,
-      "defSp": 0,
-      "defNat": 0,
-      "spaSp": 0,
-      "spaNat": 0,
-      "spdSp": 2,
-      "spdNat": 0,
-      "spdStatSp": 0,
-      "spdStatNat": 0,
-      "spdScarf": false,
-      "item": "なし",
-      "immune1": "なし",
-      "immune2": "なし",
-      "_open": false
-    },
-    {
       "name": "メガハッサム",
       "type1": "むし",
       "type2": "はがね",
-      "nature": "まじめ",
-      "ability": "なし",
+      "nature": "いじっぱり",
+      "ability": "テクニシャン",
       "moves": [
         {
-          "type": "むし"
+          "type": "はがね",
+          "name": "バレットパンチ",
+          "_defaultType": "はがね"
         },
         {
-          "type": "はがね"
+          "type": "ひこう",
+          "name": "ダブルウイング",
+          "_defaultType": "ひこう"
         },
         {
-          "type": "ひこう"
+          "type": "むし",
+          "name": "とんぼがえり",
+          "_defaultType": "むし"
         },
         {
           "type": "なし"
         }
       ],
-      "hpSp": 0,
-      "atkSp": 0,
-      "atkNat": 0,
+      "hpSp": 14,
+      "atkSp": 32,
+      "atkNat": 1,
       "defSp": 0,
       "defNat": 0,
       "spaSp": 0,
-      "spaNat": 0,
-      "spdSp": 2,
+      "spaNat": -1,
+      "spdSp": 0,
       "spdNat": 0,
-      "spdStatSp": 0,
+      "spdStatSp": 12,
       "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
       "immune1": "なし",
       "immune2": "なし",
-      "_open": false
+      "_open": true
     },
     {
-      "name": "メガキラフロル",
-      "type1": "いわ",
-      "type2": "どく",
-      "nature": "まじめ",
-      "ability": "なし",
+      "name": "メガカイリュー",
+      "type1": "ドラゴン",
+      "type2": "ひこう",
+      "nature": "ひかえめ",
+      "ability": "マルチスケイル",
       "moves": [
         {
-          "type": "いわ"
+          "type": "ほのお",
+          "name": "かえんほうしゃ",
+          "_defaultType": "ほのお"
         },
         {
-          "type": "どく"
+          "type": "でんき",
+          "name": "１０まんボルト",
+          "_defaultType": "でんき"
         },
         {
-          "type": "くさ"
+          "type": "こおり",
+          "name": "れいとうビーム",
+          "_defaultType": "こおり"
         },
         {
           "type": "なし"
         }
       ],
-      "hpSp": 0,
+      "hpSp": 31,
       "atkSp": 0,
-      "atkNat": 0,
-      "defSp": 0,
+      "atkNat": -1,
+      "defSp": 12,
       "defNat": 0,
-      "spaSp": 0,
-      "spaNat": 0,
-      "spdSp": 32,
-      "spdNat": 1,
-      "spdStatSp": 0,
+      "spaSp": 22,
+      "spaNat": 1,
+      "spdSp": 1,
+      "spdNat": 0,
+      "spdStatSp": 1,
       "spdStatNat": 0,
       "spdScarf": false,
       "item": "なし",
       "immune1": "なし",
       "immune2": "なし",
-      "_open": false
+      "_open": true
     },
     {
       "name": "メガゲンガー",
       "type1": "ゴースト",
       "type2": "どく",
-      "nature": "まじめ",
+      "nature": "おくびょう",
       "ability": "なし",
       "moves": [
         {
-          "type": "ゴースト"
+          "type": "どく",
+          "name": "ヘドロウェーブ",
+          "_defaultType": "どく"
         },
         {
-          "type": "かくとう"
+          "type": "ゴースト",
+          "name": "たたりめ",
+          "_defaultType": "ゴースト"
         },
         {
-          "type": "こおり"
+          "type": "ほのお",
+          "name": "",
+          "_defaultType": "ゴースト"
         },
         {
-          "type": "なし"
+          "type": "ノーマル",
+          "name": ""
         }
       ],
-      "hpSp": 0,
+      "hpSp": 32,
       "atkSp": 0,
-      "atkNat": 0,
+      "atkNat": -1,
       "defSp": 0,
       "defNat": 0,
-      "spaSp": 0,
+      "spaSp": 2,
       "spaNat": 0,
-      "spdSp": 32,
-      "spdNat": 1,
-      "spdStatSp": 0,
-      "spdStatNat": 0,
+      "spdSp": 0,
+      "spdNat": 0,
+      "spdStatSp": 32,
+      "spdStatNat": 1,
       "spdScarf": false,
       "item": "なし",
       "immune1": "なし",
@@ -186,41 +214,46 @@
       "_open": false
     },
     {
-      "name": "ウォッシュロトム",
+      "name": "ウォッシュロトムF",
       "type1": "でんき",
       "type2": "みず",
-      "nature": "まじめ",
-      "ability": "なし",
+      "nature": "おくびょう",
+      "ability": "ふゆう",
       "moves": [
         {
-          "type": "でんき"
+          "type": "みず",
+          "name": "ハイドロポンプ"
         },
         {
-          "type": "みず"
+          "type": "でんき",
+          "name": "１０まんボルト",
+          "_defaultType": "でんき"
         },
         {
-          "type": "なし"
+          "type": "でんき",
+          "name": "ボルトチェンジ",
+          "_defaultType": "でんき"
         },
         {
           "type": "なし"
         }
       ],
-      "hpSp": 0,
+      "hpSp": 2,
       "atkSp": 0,
-      "atkNat": 0,
+      "atkNat": -1,
       "defSp": 0,
       "defNat": 0,
-      "spaSp": 0,
+      "spaSp": 32,
       "spaNat": 0,
       "spdSp": 32,
-      "spdNat": 1,
-      "spdStatSp": 0,
-      "spdStatNat": 0,
+      "spdNat": 0,
+      "spdStatSp": 32,
+      "spdStatNat": 1,
       "spdScarf": true,
       "item": "なし",
       "immune1": "なし",
       "immune2": "じめん",
-      "_open": false
+      "_open": true
     }
   ],
   "enemy": [
