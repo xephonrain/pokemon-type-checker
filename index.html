@@ -437,6 +437,7 @@
     <button class="hdr-btn" onclick="openSlotModal('load')">📂 読込</button>
     <button class="hdr-btn" onclick="exportJSON()">⬇JSON</button>
     <button class="hdr-btn" onclick="document.getElementById('json-import').click()">⬆JSON</button>
+    <button class="hdr-btn" onclick="openGitHubModal()" style="color:#4caf82;">☁️ GH</button>
   </div>
 </div>
 
@@ -2157,6 +2158,212 @@ function deleteSlot(i) {
   slots.splice(i,1); setSlots(slots); _renderSlotList();
   showToast(`🗑 "${name}" を削除`);
 }
+
+// ============================================================
+// ============================================================
+// GitHub API 連携（複数セーブ対応）
+// ============================================================
+const GH_STORAGE_KEY = 'pkmn_gh_config';
+const GH_SAVES_DIR   = 'saves';
+
+function _ghConfig() {
+  try { return JSON.parse(localStorage.getItem(GH_STORAGE_KEY)||'{}'); }
+  catch { return {}; }
+}
+function _ghSaveConfig(cfg) {
+  localStorage.setItem(GH_STORAGE_KEY, JSON.stringify(cfg));
+}
+
+function openGitHubModal() {
+  const cfg = _ghConfig();
+  const html = `<div class="inp-popup-overlay" onclick="if(event.target===this)closePopup()">
+    <div class="inp-popup-sheet" style="max-height:90vh;overflow-y:auto;">
+      <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 12px;"></div>
+      <div style="display:flex;align-items:center;margin-bottom:14px;">
+        <span style="font-size:14px;font-weight:800;color:#4caf82;">☁️ GitHub 連携</span>
+        <button onclick="closePopup()" style="margin-left:auto;background:none;border:none;color:var(--text-sub);font-size:20px;cursor:pointer;">✕</button>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div onclick="var b=document.getElementById('gh-cfg-body');b.style.display=b.style.display==='none'?'flex':'none'"
+          style="display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--surface2);border-radius:6px;cursor:pointer;">
+          <span style="font-size:10px;font-weight:800;color:var(--text-sub);">⚙️ GitHub設定</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--text-sub);">${cfg.token?'✅ 設定済み':'❌ 未設定'}</span>
+        </div>
+        <div id="gh-cfg-body" style="display:${cfg.token?'none':'flex'};flex-direction:column;gap:6px;padding:8px;background:var(--surface2);border-radius:0 0 6px 6px;border-top:1px solid var(--border);">
+          <div>
+            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">Personal Access Token（repoスコープ）</div>
+            <input id="gh-token-inp" type="password" value="${cfg.token||''}" placeholder="ghp_xxxxxxxxxxxx"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:14px;color:var(--text);font-family:var(--font);outline:none;">
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">リポジトリ（ユーザー名/リポ名）</div>
+            <input id="gh-repo-inp" type="text" value="${cfg.repo||''}" placeholder="xephonrain/pokemon-type-checker"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:14px;color:var(--text);font-family:var(--font);outline:none;">
+          </div>
+          <button onclick="_ghSaveSettings()"
+            style="background:var(--accent2);border:none;border-radius:6px;padding:8px;font-size:12px;font-weight:800;color:#fff;cursor:pointer;font-family:var(--font);">
+            設定を保存
+          </button>
+          <div style="font-size:9px;color:var(--text-sub);">Token取得: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate（repoチェック）</div>
+        </div>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:10px;margin-bottom:12px;">
+        <div style="font-size:10px;font-weight:800;color:#4caf82;margin-bottom:6px;">☁️ 新しく保存</div>
+        <div style="display:flex;gap:6px;">
+          <input id="gh-savename-inp" type="text" placeholder="セーブ名（例: 対戦用）"
+            style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:14px;color:var(--text);font-family:var(--font);outline:none;">
+          <button onclick="_ghPush()"
+            style="background:#4caf82;border:none;border-radius:6px;padding:8px 12px;font-size:12px;font-weight:800;color:#111;cursor:pointer;font-family:var(--font);white-space:nowrap;">
+            保存
+          </button>
+        </div>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:var(--text-sub);margin-bottom:6px;">📂 保存済みデータ</div>
+      <div id="gh-saves-list" style="display:flex;flex-direction:column;gap:4px;min-height:40px;">
+        <div style="text-align:center;color:var(--text-sub);font-size:10px;padding:8px;">読み込み中...</div>
+      </div>
+      <div id="gh-status" style="margin-top:10px;font-size:10px;color:var(--text-sub);text-align:center;min-height:16px;"></div>
+    </div>
+  </div>`;
+  showPopup(html);
+  setTimeout(_ghLoadSavesList, 100);
+}
+
+function _ghSaveSettings() {
+  const token = document.getElementById('gh-token-inp')?.value?.trim();
+  const repo  = document.getElementById('gh-repo-inp')?.value?.trim();
+  if(!token || !repo) { _ghStatus('❌ TokenとリポジトリURLを入力してください'); return; }
+  _ghSaveConfig({ token, repo });
+  _ghStatus('✅ 設定を保存しました');
+  document.getElementById('gh-cfg-body').style.display = 'none';
+  setTimeout(_ghLoadSavesList, 200);
+}
+
+function _ghStatus(msg) {
+  const el = document.getElementById('gh-status');
+  if(el) el.textContent = msg;
+}
+
+async function _ghLoadSavesList() {
+  const cfg = _ghConfig();
+  const listEl = document.getElementById('gh-saves-list');
+  if(!listEl) return;
+  if(!cfg.token || !cfg.repo) {
+    listEl.innerHTML = '<div style="text-align:center;color:var(--text-sub);font-size:10px;padding:8px;">設定を完了してください</div>';
+    return;
+  }
+  try {
+    const res = await fetch(`https://api.github.com/repos/${cfg.repo}/contents/${GH_SAVES_DIR}`, {
+      headers: { 'Authorization': `token ${cfg.token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if(res.status === 404) {
+      listEl.innerHTML = '<div style="text-align:center;color:var(--text-sub);font-size:10px;padding:8px;">保存データなし（まず保存してください）</div>';
+      return;
+    }
+    if(!res.ok) { listEl.innerHTML = `<div style="text-align:center;color:var(--bad);font-size:10px;padding:8px;">エラー: ${res.status}</div>`; return; }
+    const files = (await res.json()).filter(f => f.name.endsWith('.json'));
+    if(!files.length) {
+      listEl.innerHTML = '<div style="text-align:center;color:var(--text-sub);font-size:10px;padding:8px;">保存データなし</div>';
+      return;
+    }
+    listEl.innerHTML = files.map(f => {
+      const name = f.name.replace('.json','');
+      return `<div style="display:flex;align-items:center;gap:5px;background:var(--surface2);border-radius:8px;padding:8px 10px;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}</div>
+          <div style="font-size:8px;color:var(--text-sub);">${f.name}</div>
+        </div>
+        <button onclick="_ghPull('${f.name}')" style="background:var(--accent2);border:none;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;color:#fff;cursor:pointer;font-family:var(--font);">読込</button>
+        <button onclick="_ghOverwrite('${f.name}')" style="background:rgba(255,203,5,0.15);border:1px solid var(--accent);border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;color:var(--accent);cursor:pointer;font-family:var(--font);">上書</button>
+        <button onclick="_ghDelete('${f.name}')" style="background:rgba(224,85,85,0.15);border:1px solid var(--bad);border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;color:var(--bad);cursor:pointer;font-family:var(--font);">🗑</button>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    listEl.innerHTML = `<div style="text-align:center;color:var(--bad);font-size:10px;padding:8px;">通信エラー: ${e.message}</div>`;
+  }
+}
+
+async function _ghPush(filename) {
+  const cfg = _ghConfig();
+  if(!cfg.token || !cfg.repo) { _ghStatus('❌ 先に設定してください'); return; }
+  if(!filename) {
+    const raw = document.getElementById('gh-savename-inp')?.value?.trim();
+    if(!raw) { _ghStatus('❌ セーブ名を入力してください'); return; }
+    filename = raw.replace(/[/\\:*?"<>|]/g,'_') + '.json';
+  }
+  _ghStatus(`⏳ "${filename}" を保存中...`);
+  const apiUrl = `https://api.github.com/repos/${cfg.repo}/contents/${GH_SAVES_DIR}/${filename}`;
+  try {
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(AppState.toJSON(),null,2))));
+    let sha = null;
+    const getRes = await fetch(apiUrl, { headers: { 'Authorization': `token ${cfg.token}`, 'Accept': 'application/vnd.github.v3+json' } });
+    if(getRes.ok) sha = (await getRes.json()).sha;
+    const body = { message: `Save ${filename} - ${new Date().toLocaleString('ja-JP')}`, content: encoded };
+    if(sha) body.sha = sha;
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${cfg.token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if(putRes.ok) {
+      _ghStatus(`✅ "${filename}" を保存しました`);
+      showToast(`☁️ ${filename} を保存`);
+      const inp = document.getElementById('gh-savename-inp');
+      if(inp) inp.value = '';
+      setTimeout(_ghLoadSavesList, 800);
+    } else {
+      _ghStatus(`❌ エラー: ${(await putRes.json()).message}`);
+    }
+  } catch(e) { _ghStatus(`❌ 通信エラー: ${e.message}`); }
+}
+
+function _ghOverwrite(filename) {
+  if(!confirm(`"${filename.replace('.json','')}" に上書き保存しますか？`)) return;
+  _ghPush(filename);
+}
+
+async function _ghPull(filename) {
+  const cfg = _ghConfig();
+  if(!cfg.token || !cfg.repo) { _ghStatus('❌ 先に設定してください'); return; }
+  _ghStatus(`⏳ "${filename}" を読込中...`);
+  try {
+    const res = await fetch(`https://api.github.com/repos/${cfg.repo}/contents/${GH_SAVES_DIR}/${filename}`, {
+      headers: { 'Authorization': `token ${cfg.token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if(!res.ok) { _ghStatus(`❌ エラー: ${res.status}`); return; }
+    const data = await res.json();
+    AppState.fromJSON(JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))))));
+    closePopup();
+    showToast(`☁️ ${filename.replace('.json','')} を読込`);
+  } catch(e) { _ghStatus(`❌ エラー: ${e.message}`); }
+}
+
+async function _ghDelete(filename) {
+  if(!confirm(`"${filename.replace('.json','')}" を削除しますか？`)) return;
+  const cfg = _ghConfig();
+  if(!cfg.token || !cfg.repo) { _ghStatus('❌ 先に設定してください'); return; }
+  _ghStatus(`⏳ "${filename}" を削除中...`);
+  const apiUrl = `https://api.github.com/repos/${cfg.repo}/contents/${GH_SAVES_DIR}/${filename}`;
+  try {
+    const getRes = await fetch(apiUrl, { headers: { 'Authorization': `token ${cfg.token}`, 'Accept': 'application/vnd.github.v3+json' } });
+    if(!getRes.ok) { _ghStatus('❌ ファイルが見つかりません'); return; }
+    const sha = (await getRes.json()).sha;
+    const delRes = await fetch(apiUrl, {
+      method: 'DELETE',
+      headers: { 'Authorization': `token ${cfg.token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `Delete ${filename}`, sha }),
+    });
+    if(delRes.ok) {
+      _ghStatus(`✅ "${filename}" を削除しました`);
+      showToast(`🗑 ${filename.replace('.json','')} を削除`);
+      setTimeout(_ghLoadSavesList, 600);
+    } else {
+      _ghStatus(`❌ エラー: ${(await delRes.json()).message}`);
+    }
+  } catch(e) { _ghStatus(`❌ 通信エラー: ${e.message}`); }
+}
+
+
 function exportJSON() {
   const blob = new Blob([JSON.stringify(AppState.toJSON(),null,2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
