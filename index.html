@@ -449,7 +449,6 @@
   <button class="tab-btn"        data-tab="select"  onclick="switchMainTab('select')">📊 選出</button>
   <button class="tab-btn"        data-tab="battle2" onclick="switchMainTab('battle2')">⚔️ バトル</button>
   <button class="tab-btn"        data-tab="list"    onclick="switchMainTab('list')">📋 一覧表</button>
-  <button class="tab-btn"        data-tab="builder" onclick="switchMainTab('builder')">🏗 作成</button>
 </div>
 
 <!-- ============================================================
@@ -814,11 +813,6 @@
       <div id="lt-dmg-content" style="padding:6px 8px;"></div>
     </div>
   </div>
-  <!-- ========== 作成タブ ========== -->
-  <div id="panel-builder" class="tab-panel">
-    <!-- ポケモン選択バー -->
-    <div style="background:var(--surface2);border-bottom:1px solid var(--border);padding:5px 8px;flex-shrink:0;">
-      <div style="font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px;">🏗 パーティ作成</div>
       <div id="builder-poke-btns" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
     </div>
     <!-- スクロールエリア -->
@@ -1232,7 +1226,6 @@ const POKEMON_DB=[
 {"name":"ブリジュラス","hp":90,"atk":105,"def":130,"spa":125,"spd":65,"spe":85,"t1":"はがね","t2":"ドラゴン","abilities":["がんじょう", "じきゅうりょく", "すじがねいり"],"moves":["ラスターカノン", "りゅうせいぐん", "１０まんボルト", "ステルスロック", "はどうだん", "ドラゴンテール"]},
 {"name":"カミツオロチ","hp":106,"atk":80,"def":110,"spa":120,"spd":80,"spe":44,"t1":"くさ","t2":"ドラゴン","abilities":["supersweet-syrup", "さいせいりょく", "ねんちゃく"],"moves":["きまぐレーザー", "だいちのちから", "ギガドレイン", "あくび", "リーフストーム", "じこさいせい"]}
 ];
-
 const MOVE_DB={
 "ギガインパクト":{"type": "ノーマル", "cat": "物理", "power": 150, "acc": "90", "effect": "使った次のターン 自分は 反動状態になる。"},
 "げきりん":{"type": "ドラゴン", "cat": "物理", "power": 120, "acc": "100", "effect": "自分は あばれ状態になる。"},
@@ -1886,6 +1879,42 @@ const MOVE_DB={
 "エレクトロビーム":{"type": "でんき", "cat": "特殊", "power": 130, "acc": "100", "effect": "使ったターンで溜め状態になり 次のターンで攻撃する。 あめ状態の場合は溜め状態にならず すぐに攻撃できる。 使ったターンに 自分の特攻を１段階上げる。"},
 "きまぐレーザー":{"type": "ドラゴン", "cat": "特殊", "power": 80, "acc": "100", "effect": "３０％の確率で威力が２倍になる。"},
 "みずあめボム":{"type": "くさ", "cat": "特殊", "power": 60, "acc": "85", "effect": "３ターンの間 相手を あめまみれ状態にする。"}
+};
+
+// ============================================================
+// 定数・データ
+// ============================================================
+const TYPES = ["ノーマル","ほのお","みず","くさ","でんき","こおり","かくとう","どく",
+               "じめん","ひこう","エスパー","むし","いわ","ゴースト","ドラゴン","あく","はがね","フェアリー"];
+
+const TYPE_COLOR = {
+  'ノーマル':'#a8a878','ほのお':'#f08030','みず':'#6890f0','くさ':'#78c850',
+  'でんき':'#f8d030','こおり':'#98d8d8','かくとう':'#c03028','どく':'#a040a0',
+  'じめん':'#e0c068','ひこう':'#a890f0','エスパー':'#f85888','むし':'#a8b820',
+  'いわ':'#b8a038','ゴースト':'#705898','ドラゴン':'#7038f8','あく':'#705848',
+  'はがね':'#b8b8d0','フェアリー':'#f0a0b8'
+};
+const TYPE_DARK = new Set(['でんき','こおり','じめん','はがね','フェアリー','ノーマル','くさ']);
+
+const TYPE_CHART = {
+  "ノーマル":  {"ゴースト":0,"いわ":0.5,"はがね":0.5},
+  "ほのお":    {"ほのお":0.5,"みず":0.5,"くさ":2,"こおり":2,"むし":2,"いわ":0.5,"ドラゴン":0.5,"はがね":2},
+  "みず":      {"ほのお":2,"みず":0.5,"くさ":0.5,"じめん":2,"いわ":2,"ドラゴン":0.5},
+  "くさ":      {"ほのお":0.5,"みず":2,"くさ":0.5,"どく":0.5,"じめん":2,"ひこう":0.5,"むし":0.5,"いわ":2,"ドラゴン":0.5,"はがね":0.5},
+  "でんき":    {"みず":2,"でんき":0.5,"くさ":0.5,"じめん":0,"ひこう":2,"ドラゴン":0.5},
+  "こおり":    {"ほのお":0.5,"みず":0.5,"くさ":2,"こおり":0.5,"じめん":2,"ひこう":2,"ドラゴン":2,"はがね":0.5},
+  "かくとう":  {"ノーマル":2,"こおり":2,"どく":0.5,"ひこう":0.5,"エスパー":0.5,"むし":0.5,"いわ":2,"ゴースト":0,"あく":2,"はがね":2,"フェアリー":0.5},
+  "どく":      {"くさ":2,"どく":0.5,"じめん":0.5,"いわ":0.5,"ゴースト":0.5,"はがね":0,"フェアリー":2},
+  "じめん":    {"ほのお":2,"でんき":2,"くさ":0.5,"どく":2,"ひこう":0,"むし":0.5,"いわ":2,"はがね":2},
+  "ひこう":    {"でんき":0.5,"くさ":2,"かくとう":2,"むし":2,"いわ":0.5,"はがね":0.5},
+  "エスパー":  {"かくとう":2,"どく":2,"エスパー":0.5,"あく":0,"はがね":0.5},
+  "むし":      {"ほのお":0.5,"くさ":2,"かくとう":0.5,"どく":0.5,"ひこう":0.5,"エスパー":2,"ゴースト":0.5,"あく":2,"はがね":0.5,"フェアリー":0.5},
+  "いわ":      {"ほのお":2,"こおり":2,"かくとう":0.5,"じめん":0.5,"ひこう":2,"むし":2,"はがね":0.5},
+  "ゴースト":  {"ノーマル":0,"エスパー":2,"ゴースト":2,"あく":0.5},
+  "ドラゴン":  {"ドラゴン":2,"はがね":0.5,"フェアリー":0},
+  "あく":      {"かくとう":0.5,"エスパー":2,"ゴースト":2,"あく":0.5,"フェアリー":0.5},
+  "はがね":    {"ほのお":0.5,"みず":0.5,"でんき":0.5,"こおり":2,"いわ":2,"はがね":0.5,"フェアリー":2},
+  "フェアリー":{"ほのお":0.5,"かくとう":2,"どく":0.5,"ドラゴン":2,"あく":2,"はがね":0.5}
 };
 
 // ============================================================
@@ -2636,7 +2665,6 @@ function switchMainTab(id) {
   if(id==='select')  _activateSubTab('select', _subTabState.select);
   if(id==='battle2') { _subTabState.battle2 = _subTabState.battle2||'battle'; _activateSubTab('battle2', _subTabState.battle2); }
   if(id==='list')    setListMode(_listMode||'typetbl');
-  if(id==='builder') renderBuilderTab();
 }
 
 function switchSubTab(main, sub) {
@@ -2919,6 +2947,40 @@ function calcDamage(atkBase, atkSP, atkNat, atkRank,
 }
 
 // ---- renderDmgTab ----
+
+// 与ダメ：相手ポケモンへの最高判定を計算（確定1/乱数1）
+function _calcBestJudge(atkPoke, defPoke) {
+  if(!atkPoke||!defPoke) return '';
+  const atkDB = POKEMON_DB.find(d=>d.name===atkPoke.name);
+  const defDB = POKEMON_DB.find(d=>d.name===defPoke.name);
+  if(!atkDB||!defDB) return '';
+  const moves = (atkPoke.moves||[]).filter(mv=>mv.name&&mv.type&&mv.type!=='なし'&&mv.type!==undefined);
+  if(!moves.length) return '';
+  let best = '';
+  for(const mv of moves) {
+    const mdat = typeof MOVE_DB!=='undefined'?MOVE_DB[mv.name]:null;
+    if(!mdat||mdat.cat==='変化'||!mdat.power) continue;
+    const isPhys = mdat.cat==='物理';
+    const atkStat = isPhys ? atkDB.atk : atkDB.spa;
+    const atkSp   = isPhys ? (atkPoke.atkSp||0) : (atkPoke.spaSp||0);
+    const atkNat  = isPhys ? (atkPoke.atkNat||0) : (atkPoke.spaNat||0);
+    const r = calcDamage(
+      atkStat, atkSp, atkNat, 0,
+      defDB.def, 0, 0, 0,
+      defDB.hp, 0,
+      mdat.power, mdat.cat, mv.type,
+      'なし','なし','なし',false,false,
+      atkPoke.ability||'なし', defPoke.ability||'なし',
+      atkPoke.item||'なし',
+      atkDB.t1||'', atkDB.t2||'', defDB.t1||defPoke.type1||'', defDB.t2||defPoke.type2||''
+    );
+    if(!r) continue;
+    if(r.nkLabel&&r.nkLabel.includes('確定1')) return '確定1';
+    if(r.nkLabel&&r.nkLabel.includes('乱数1')) best = '乱数1';
+  }
+  return best;
+}
+
 function renderDmgTab() {
   const el = document.getElementById('dmg-content');
   if(!el) return;
@@ -3020,12 +3082,21 @@ function _renderDmgAtk(s, myA, enA) {
   h += `<div style="background:rgba(224,85,85,0.08);border:1px solid rgba(224,85,85,0.3);border-radius:8px;padding:8px;margin-bottom:8px;">
     <div style="font-size:10px;font-weight:800;color:#e05555;margin-bottom:5px;">🛡️ 防御側（相手）</div>
     <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:5px;">
-      ${enA.map(({p,i})=>`<button onclick="_dmgState.defIdx=${i};renderDmgTab()"
+      ${enA.map(({p,i})=>`<button onclick="_dmgState.defIdx=${i};_dmgState.defHpBefore=_dmgState._defHpMemory[p.name]||100;_dmgState.defHpAfter=null;renderDmgTab()"
         style="background:${s.defIdx===i?'var(--bad)':'var(--surface)'};
         border:1px solid ${s.defIdx===i?'var(--bad)':'var(--border)'};
         color:${s.defIdx===i?'#fff':'var(--text-sub)'};
         border-radius:6px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:var(--font);">
         ${p.name||`相手${i+1}`}
+        ${(()=>{
+          if(!atkPoke) return '';
+          const j = _calcBestJudge(atkPoke, p);
+          return j==='確定1'
+            ? '<span style="font-size:7px;background:#ff4444;color:#fff;border-radius:3px;padding:0 3px;margin-left:2px;vertical-align:middle;">確定</span>'
+            : j==='乱数1'
+            ? '<span style="font-size:7px;background:#ff8800;color:#fff;border-radius:3px;padding:0 3px;margin-left:2px;vertical-align:middle;">乱数</span>'
+            : '';
+        })()}
       </button>`).join('')}
     </div>
     ${defPoke ? `
@@ -3203,25 +3274,7 @@ function _renderDmgDef(s, myA, enA) {
             <td style="padding:3px 5px;border:1px solid var(--border);text-align:center;font-weight:800;color:${jc};">${judge}</td>
           </tr>`;
         }).join('')}
-      </table>
-      <!-- 受けダメ逆算 -->
-      <div style="border-top:1px solid var(--border);padding-top:6px;">
-        <div style="font-size:9px;color:var(--text-sub);margin-bottom:4px;">実際に受けたダメージから相手の型を推定:</div>
-        <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
-          <span style="font-size:9px;color:var(--text-sub);">実ダメ:</span>
-          <input id="dmg-rev-def-input" type="number" min="0" placeholder="実数値"
-            value="${myActualDmg !== null ? myActualDmg : ''}"
-            style="width:60px;background:var(--bg);border:1px solid var(--border);border-radius:4px;
-            color:var(--text);font-size:10px;text-align:center;padding:2px;font-family:var(--font);">
-          <button onclick="_dmgReverseDef('${atkPoke.name.replace(/'/g,"\\'")}',${atkDB?.atk||0},${atkDB?.spa||0},${defDB?.def||0},${defDB?.spd||0},${myHpMax})"
-            style="background:var(--bad);border:none;color:#fff;border-radius:5px;
-            padding:3px 10px;font-size:10px;font-weight:800;cursor:pointer;font-family:var(--font);">型を推定</button>
-          ${(()=>{const r=_dmgRecord[atkPoke.name];if(!r)return'';if(r.decided)return `<span style="font-size:9px;color:var(--accent);">✓SP${r.decided.sp} ${r.decided.nat===1?'↑':r.decided.nat===-1?'↓':'±'}${r.decided.item?' 持物':''}</span>`;if(r.candidates)return `<span style="font-size:9px;color:#88aaff;">${r.candidates.length}候補</span>`;return '';})()}
-        </div>
-      </div>
-    </div>`;
-  } else if(atkPoke && defPoke) {
-    h += `<div style="text-align:center;color:var(--text-sub);padding:12px;font-size:11px;">技を選択してください</div>`;
+      </table></div>`;
   }
   return h;
 }
@@ -3362,7 +3415,7 @@ function _dmgMoveBtns(poke, db, selectedName, mode) {
         inpMoveKeys.add(mvName);
         const m = MOVE_DB[mvName];
         const cc = m.cat==='物理'?'#e05555':'#6890f0';
-        btns.push(`<button onclick="_dmgState.${stateKey}='${mvName.replace(/'/g,"\\'")}';renderDmgTab()"
+        btns.push(`<button onclick="_dmgState.${stateKey}='${mvName.replace(/'/g,"\\'")}';if(mode==='rec'){const _rp=_dmgState.recAtkIdx!==null?AppState.enemyTeam[_dmgState.recAtkIdx]:null;if(_rp)_dmgState.recMoveMemory[_rp.name]='${mvName.replace(/'/g,"\\'")}';};renderDmgTab()"
           style="background:${selectedName===mvName?'rgba(255,203,5,0.2)':'var(--surface)'};
           border:2px solid ${selectedName===mvName?'var(--accent)':'rgba(255,203,5,0.4)'};
           border-radius:5px;padding:3px 6px;font-size:9px;cursor:pointer;font-family:var(--font);
@@ -3741,22 +3794,7 @@ function _dmgAtkResult(results, spList, moveData, atkPoke, defPoke, defDB, s, re
       h2 += '</div></div>';
       return h2;
     })()}
-    <div style="border-top:1px solid var(--border);padding-top:6px;">
-      <div style="font-size:9px;color:var(--text-sub);margin-bottom:4px;">与えた%ダメから相手の型を推定:</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
-        <span style="font-size:9px;color:var(--text-sub);">%ダメ:</span>
-        <input id="dmg-rev-input" type="number" min="0" step="0.1"
-          value="${s.defHpAfter!==null&&s.defHpAfter!==undefined ? Math.max(0,(s.defHpBefore||100)-s.defHpAfter) : ''}"
-          placeholder="例: 47.3"
-          style="width:65px;background:var(--bg);border:1px solid var(--border);border-radius:4px;
-          color:var(--text);font-size:10px;text-align:center;padding:2px;font-family:var(--font);">
-        <button onclick="_dmgReverseAtk('${defPoke.name.replace(/'/g,"\'")}',${defDB?.def||0},${defDB?.spd||0},${defDB?.hp||0})"
-          style="background:var(--accent);border:none;color:#111;border-radius:5px;
-          padding:3px 10px;font-size:10px;font-weight:800;cursor:pointer;font-family:var(--font);">型を推定</button>
-        ${(()=>{const r=_dmgRecord[defPoke.name];if(!r)return'';if(r.decided)return `<span style="font-size:9px;color:var(--accent);">✓SP${r.decided.sp} ${r.decided.nat===1?'↑':r.decided.nat===-1?'↓':'±'}</span>`;if(r.candidates)return `<span style="font-size:9px;color:#88aaff;">${r.candidates.length}候補</span>`;return '';})()}
-      </div>
-    </div>
-    ${(()=>{const r=_dmgRecord[defPoke.name];return r&&r.candidates?_dmgCandidateUI(r,defPoke.name,'atk'):'';})()}`;
+    </div>`;
   }
   return h + `</div>`;
 }
@@ -3827,10 +3865,7 @@ function _dmgSyncHpPct() {
   }
 }
 
-function _recGet(name) {
-  if(!_dmgRecord[name]) _dmgRecord[name] = {candidates:null, decided:null};
-  return _dmgRecord[name];
-}
+
 function _recDecide(name, cObj) {
   const rec = _recGet(name);
   rec.decided = typeof cObj === 'string' ? JSON.parse(cObj) : cObj;
@@ -3839,37 +3874,6 @@ function _recDecide(name, cObj) {
   renderDmgTab();
 }
 
-function _dmgCandidateUI(rec, name, mode) {
-  const cands = rec.candidates || [];
-  const decided = rec.decided;
-  if(!cands.length) return '';
-  const nameEsc = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  let h = '<div style="margin-top:6px;padding:5px 8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;">';
-  h += '<div style="font-size:9px;font-weight:800;color:#88aaff;margin-bottom:5px;">🔍 推定候補（' + cands.length + '件）';
-  h += '<span style="font-weight:400;color:var(--text-sub);margin-left:4px;">攻撃を重ねるたびに絞り込まれます</span></div>';
-  h += '<div style="display:flex;flex-wrap:wrap;gap:3px;">';
-  cands.slice(0,12).forEach(c => {
-    const natStr = c.nat===1?'↑':c.nat===-1?'↓':'±';
-    const label = 'SP'+c.sp+' '+natStr+(c.item?' 持物':'');
-    const isDec = decided && decided.sp===c.sp && decided.nat===c.nat && !!decided.item===!!c.item;
-    const cJson = JSON.stringify(c).replace(/'/g,"\'");
-    h += '<button onclick="_recDecide(\'' + nameEsc + '\',\'' + cJson + '\')" ';
-    h += 'style="background:' + (isDec?'rgba(255,203,5,0.2)':'var(--surface2)') + ';';
-    h += 'border:1px solid ' + (isDec?'var(--accent)':'var(--border)') + ';';
-    h += 'border-radius:5px;padding:3px 8px;font-size:9px;cursor:pointer;font-family:var(--font);';
-    h += 'color:' + (isDec?'var(--accent)':'var(--text-sub)') + ';">';
-    h += (isDec?'✓ ':'') + label + '</button>';
-  });
-  if(cands.length > 12) h += '<span style="font-size:9px;color:var(--text-sub);">他'+(cands.length-12)+'件</span>';
-  h += '</div>';
-  if(decided) {
-    const ds = decided.nat===1?'↑':decided.nat===-1?'↓':'±';
-    h += '<div style="margin-top:4px;font-size:9px;color:var(--accent);">✓ 確定: SP'+decided.sp+' 性格'+ds+(decided.item?' 持物':'');
-    h += '<button onclick="_dmgRecord[\''+nameEsc+'\'].decided=null;renderDmgTab()" style="background:none;border:none;color:var(--text-sub);font-size:9px;cursor:pointer;margin-left:4px;">解除</button></div>';
-  }
-  h += '</div>';
-  return h;
-}
 
 function _myHpPickerUI(s, defDB, defPoke) {
   const maxHp = _calcHP(defDB?.hp||0, defPoke?.hpSp||0) || 200;
@@ -6434,48 +6438,7 @@ function _updateBattleSummary() {
 // ============================================================
 let _builderSel = new Set(); // 選択中のポケモンindex (myTeam)
 
-function renderBuilderTab() {
-  _renderBuilderPokeBtns();
-  _renderBuilderTable();
-  _renderBuilderSummary();
-}
 
-// ---- ポケモン選択ボタン ----
-function _renderBuilderPokeBtns() {
-  const el = document.getElementById('builder-poke-btns');
-  if(!el) return;
-  const active = AppState.myTeam
-    .map((p,i)=>({p,i}))
-    .filter(({p})=>p.name||(p.type1&&p.type1!=='なし'));
-
-  if(!active.length) {
-    el.innerHTML=`<span style="font-size:10px;color:var(--text-sub);">入力タブで自分のポケモンを入力してください</span>`;
-    return;
-  }
-  el.innerHTML = active.map(({p,i})=>{
-    const sel = _builderSel.has(i);
-    const name = p.name||`自分${i+1}`;
-    const bg = sel ? 'var(--accent)' : 'var(--surface)';
-    const color = sel ? '#111' : 'var(--text-sub)';
-    return `<button onclick="toggleBuilderPoke(${i})"
-      style="background:${bg};border:1px solid ${sel?'var(--accent)':'var(--border)'};
-      color:${color};border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;
-      cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:3px;">
-      ${sel?'✓ ':''}${name}
-      <span style="display:flex;gap:1px;">${tc(p.type1)}${tc(p.type2)}</span>
-    </button>`;
-  }).join('');
-}
-
-function toggleBuilderPoke(i) {
-  if(_builderSel.has(i)) _builderSel.delete(i);
-  else _builderSel.add(i);
-  _renderBuilderPokeBtns();
-  _renderBuilderTable();
-  _renderBuilderSummary();
-}
-
-// ---- 攻め技タイプ取得 (技なしならポケモンタイプで代用) ----
 function _getAtkTypes(p) {
   const movTypes = p.moves.filter(m=>m.type&&m.type!=='なし').map(m=>m.type);
   if(movTypes.length) return [...new Set(movTypes)];
@@ -6521,202 +6484,7 @@ function scoreToSymDef(s) {
 }
 
 // ---- 相性表 ----
-function _renderBuilderTable() {
-  const wrap = document.getElementById('builder-table-wrap');
-  if(!wrap) return;
 
-  const active = AppState.myTeam
-    .map((p,i)=>({p,i}))
-    .filter(({p})=>p.name||(p.type1&&p.type1!=='なし'));
-
-  if(!active.length) { wrap.innerHTML=''; return; }
-
-  // 選択中ポケモン (選択なし = 全員表示)
-  const showAll = _builderSel.size===0;
-  const rows = showAll ? active : active.filter(({i})=>_builderSel.has(i));
-  if(!rows.length) { wrap.innerHTML=''; return; }
-
-  // セル幅: 画面幅で動的計算
-  const screenW = window.innerWidth || 390;
-  const ROW_W = 50; // 行ヘッダー幅
-  const cellW = Math.max(22, Math.floor((screenW - ROW_W) / TYPES.length));
-  const cellH = Math.max(20, cellW);
-  const colH  = Math.max(30, Math.round(cellW * 2.2));
-  const fs    = Math.max(9, Math.min(12, cellW - 2));
-
-  // ヘッダー (列: 18タイプ)
-  let html = `<table style="border-collapse:collapse;white-space:nowrap;font-size:${fs}px;">
-    <thead>`;
-
-  // 攻め表
-  html += `<tr><th colspan="${TYPES.length+1}"
-    style="background:rgba(255,136,0,0.12);color:#ff8800;font-size:10px;font-weight:800;
-    padding:3px 6px;text-align:left;border-bottom:1px solid var(--border);">
-    ⚔️ 攻め (自分の技→相手タイプ)
-  </th></tr>`;
-  html += `<tr>`;
-  html += `<th style="width:${ROW_W}px;min-width:${ROW_W}px;background:var(--bg);
-    position:sticky;left:0;z-index:5;font-size:8px;color:var(--text-sub);padding:2px;
-    border:1px solid var(--border);"></th>`;
-  TYPES.forEach(t=>{
-    const color = TYPE_COLOR[t]||'#aaa';
-    html += `<th style="width:${cellW}px;min-width:${cellW}px;height:${colH}px;
-      background:var(--surface2);border:1px solid var(--border);padding:0;">
-      <div style="writing-mode:vertical-rl;font-weight:700;color:${color};
-        font-size:${Math.max(7,fs-2)}px;padding:2px 1px;display:block;text-align:center;line-height:1;">${t}</div>
-    </th>`;
-  });
-  html += `</tr></thead><tbody>`;
-
-  // 攻め行: 各ポケモン
-  rows.forEach(({p,i})=>{
-    const name = p.name||`自分${i+1}`;
-    const atkTypes = _getAtkTypes(p);
-    const imm = getImm(p);
-    html += `<tr>`;
-    html += `<th style="width:${ROW_W}px;min-width:${ROW_W}px;background:var(--surface2);
-      position:sticky;left:0;z-index:4;border:1px solid var(--border);padding:2px 4px;text-align:left;">
-      <div style="font-size:9px;font-weight:800;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:${ROW_W-8}px;">${name}</div>
-      <div style="display:flex;gap:1px;margin-top:1px;">${tc(p.type1)}${tc(p.type2)}</div>
-    </th>`;
-    TYPES.forEach(defType=>{
-      // 相手タイプへの最大倍率 (複数技の中で最大)
-      let bestMult = 0;
-      let hasTech = false;
-      atkTypes.forEach(atkT=>{
-        const m = calcEff(atkT, defType, null, []);
-        if(m > bestMult) bestMult = m;
-        hasTech = true;
-      });
-      if(!hasTech) {
-        html += `<td style="width:${cellW}px;height:${cellH}px;border:1px solid var(--border);
-          text-align:center;font-size:${fs}px;background:var(--surface);color:var(--text-sub);">-</td>`;
-        return;
-      }
-      const cls = effCls(bestMult);
-      const sym = effSymbol(bestMult);
-      html += `<td style="width:${cellW}px;height:${cellH}px;border:1px solid var(--border);
-        text-align:center;font-size:${fs}px;" class="${_bldCellBg(bestMult)}">${sym}</td>`;
-    });
-    html += `</tr>`;
-  });
-
-  // 攻め合計行 (複数選択時) — 新方式: 最良1人ベース + 対応人数バッジ
-  if(rows.length > 1) {
-    html += `<tr>`;
-    html += `<th style="width:${ROW_W}px;min-width:${ROW_W}px;background:rgba(255,203,5,0.10);
-      position:sticky;left:0;z-index:4;border:1px solid var(--border);padding:2px 4px;text-align:left;">
-      <div style="font-size:9px;font-weight:800;color:var(--accent);">合計</div>
-      <div style="font-size:7px;color:var(--text-sub);">最良+人数</div>
-    </th>`;
-    TYPES.forEach(defType=>{
-      const perPoke = rows.map(({p})=>{
-        const atkTypes=_getAtkTypes(p); let best=0;
-        atkTypes.forEach(t=>{ const m=calcEff(t,defType,null,[]); if(m>best)best=m; });
-        return best;
-      });
-      const bestAll  = Math.max(...perPoke);           // パーティ最良倍率
-      const count2x  = perPoke.filter(m=>m>=2).length; // 2倍以上で攻められる人数
-      const countAny = perPoke.filter(m=>m>=1).length; // 等倍以上で攻められる人数
-      const {sym,cls} = _atkSummarySymCls(bestAll);
-      const badge = bestAll>=2 && count2x>1 ? `<span style="font-size:7px;font-weight:800;color:#ffdd44;">×${count2x}</span>`
-                  : bestAll>=1 && countAny>1 ? `<span style="font-size:7px;color:var(--text-sub);">×${countAny}</span>`
-                  : '';
-      const warn = bestAll<1 && perPoke.every(m=>m===0) ? '⚠️' : '';
-      html += `<td style="width:${cellW}px;height:${cellH}px;border:1px solid var(--border);
-        text-align:center;font-size:${fs}px;background:rgba(255,203,5,0.06);">
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:0px;">
-          <span class="eff ${cls}" style="width:${Math.max(cellW-4,14)}px;height:${Math.max(cellH-8,12)}px;font-size:${fs}px;border-radius:2px;">${warn||sym}</span>
-          ${badge}
-        </div>
-      </td>`;
-    });
-    html += `</tr>`;
-  }
-
-  // 受け表ヘッダー
-  html += `<tr><td colspan="${TYPES.length+1}" style="height:8px;background:var(--bg);border:none;"></td></tr>`;
-  html += `<tr><th colspan="${TYPES.length+1}"
-    style="background:rgba(61,125,202,0.12);color:#6890f0;font-size:10px;font-weight:800;
-    padding:3px 6px;text-align:left;border-bottom:1px solid var(--border);">
-    🛡️ 受け (相手タイプ技→自分)
-  </th></tr>`;
-  html += `<tr>`;
-  html += `<th style="width:${ROW_W}px;min-width:${ROW_W}px;background:var(--bg);
-    position:sticky;left:0;z-index:5;border:1px solid var(--border);padding:2px;"></th>`;
-  TYPES.forEach(t=>{
-    const color = TYPE_COLOR[t]||'#aaa';
-    html += `<th style="width:${cellW}px;min-width:${cellW}px;height:${colH}px;
-      background:var(--surface2);border:1px solid var(--border);padding:0;">
-      <div style="writing-mode:vertical-rl;font-weight:700;color:${color};
-        font-size:${Math.max(7,fs-2)}px;padding:2px 1px;display:block;text-align:center;line-height:1;">${t}</div>
-    </th>`;
-  });
-  html += `</tr>`;
-
-  // 受け行: 各ポケモン
-  rows.forEach(({p,i})=>{
-    const name = p.name||`自分${i+1}`;
-    const myImm = getImm(p);
-    html += `<tr>`;
-    html += `<th style="width:${ROW_W}px;min-width:${ROW_W}px;background:var(--surface2);
-      position:sticky;left:0;z-index:4;border:1px solid var(--border);padding:2px 4px;text-align:left;">
-      <div style="font-size:9px;font-weight:800;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:${ROW_W-8}px;">${name}</div>
-      <div style="display:flex;gap:1px;margin-top:1px;">${tc(p.type1)}${tc(p.type2)}</div>
-    </th>`;
-    TYPES.forEach(atkType=>{
-      const m = calcEff(atkType, p.type1, p.type2, myImm);
-      // 受け逆転: 倍率低いほど良い→☆
-      const dispMult = defScore(m);
-      const cls = effCls(dispMult);
-      const sym = effSymbol(dispMult);
-      const waImm = myImm.includes(atkType) && m===0;
-      html += `<td style="width:${cellW}px;height:${cellH}px;border:1px solid var(--border);
-        text-align:center;font-size:${fs}px;" class="${_bldCellBgDef(m)}"
-        title="${waImm?'🚫特性無効':''}">
-        ${waImm?`<span style="font-size:8px;">🚫</span>`:sym}
-      </td>`;
-    });
-    html += `</tr>`;
-  });
-
-  // 受け合計行 (複数選択時) — 新方式: 最良(最小倍率)ベース + 全員弱点なら警告
-  if(rows.length > 1) {
-    html += `<tr>`;
-    html += `<th style="width:${ROW_W}px;min-width:${ROW_W}px;background:rgba(255,203,5,0.10);
-      position:sticky;left:0;z-index:4;border:1px solid var(--border);padding:2px 4px;text-align:left;">
-      <div style="font-size:9px;font-weight:800;color:var(--accent);">合計</div>
-      <div style="font-size:7px;color:var(--text-sub);">最耐性+警告</div>
-    </th>`;
-    TYPES.forEach(atkType=>{
-      const perPoke = rows.map(({p})=>{
-        const myImm=getImm(p);
-        return calcEff(atkType,p.type1,p.type2,myImm);
-      });
-      const bestDef  = Math.min(...perPoke);               // 最小倍率 = 最も受けられる人
-      const allWeak  = perPoke.every(m=>m>=2);             // 全員2倍以上被弾
-      const countRes = perPoke.filter(m=>m<=0.5).length;  // 耐性持ち人数
-      const {sym,cls} = _defSummarySymCls(bestDef);
-      const warn  = allWeak ? '⚠️' : '';
-      const badge = !allWeak && bestDef<=0.5 && countRes>1
-        ? `<span style="font-size:7px;font-weight:800;color:#88bbff;">×${countRes}</span>`
-        : '';
-      html += `<td style="width:${cellW}px;height:${cellH}px;border:1px solid var(--border);
-        text-align:center;font-size:${fs}px;background:rgba(255,203,5,0.06);">
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:0px;">
-          <span class="eff ${cls}" style="width:${Math.max(cellW-4,14)}px;height:${Math.max(cellH-8,12)}px;font-size:${fs}px;border-radius:2px;">${warn||sym}</span>
-          ${badge}
-        </div>
-      </td>`;
-    });
-    html += `</tr>`;
-  }
-
-  html += `</tbody></table>`;
-  wrap.innerHTML = html;
-}
-
-// セル背景 (攻め用: 大きいほど良い)
 function _bldCellBg(m) {
   if(m>=4)   return 'bt-great';
   if(m>=2)   return 'bt-good';
@@ -6756,202 +6524,7 @@ function _defSummarySymCls(minMult) {
 }
 
 // ---- 集計パネル (新方式) ----
-function _renderBuilderSummary() {
-  const el = document.getElementById('builder-summary');
-  if(!el) return;
 
-  const active = AppState.myTeam
-    .map((p,i)=>({p,i}))
-    .filter(({p})=>p.name||(p.type1&&p.type1!=='なし'));
-  const showAll = _builderSel.size===0;
-  const rows = showAll ? active : active.filter(({i})=>_builderSel.has(i));
-  if(!rows.length){ el.innerHTML=''; return; }
-
-  // 攻め: タイプごとに「最良倍率」と「対応人数」を計算
-  const atkData = TYPES.map(defType=>{
-    const perPoke = rows.map(({p})=>{
-      const atkTypes=_getAtkTypes(p); let best=0;
-      atkTypes.forEach(t=>{ const m=calcEff(t,defType,null,[]); if(m>best)best=m; });
-      return best;
-    });
-    const bestAll  = Math.max(...perPoke);
-    const count2x  = perPoke.filter(m=>m>=2).length;
-    const countAny = perPoke.filter(m=>m>=1).length;
-    return {type:defType, bestAll, count2x, countAny};
-  });
-
-  // 受け: タイプごとに「最小倍率（最耐性）」と「全員弱点フラグ」を計算
-  const defData = TYPES.map(atkType=>{
-    const perPoke = rows.map(({p})=>{
-      return calcEff(atkType,p.type1,p.type2,getImm(p));
-    });
-    const minAll   = Math.min(...perPoke);
-    const allWeak  = perPoke.every(m=>m>=2);
-    const countRes = perPoke.filter(m=>m<=0.5).length;
-    return {type:atkType, minAll, allWeak, countRes};
-  });
-
-  // 攻めをグループ化 (最良倍率で分類)
-  const atkGroups = {};
-  atkData.forEach(({type,bestAll,count2x,countAny})=>{
-    const {sym} = _atkSummarySymCls(bestAll);
-    if(!atkGroups[sym]) atkGroups[sym]=[];
-    // ×2以上で攻められる人数バッジ
-    const badge = bestAll>=2 && count2x>1 ? `<span style="font-size:8px;color:#ffdd44;font-weight:800;">×${count2x}</span>`
-                : bestAll>=1 && countAny>1 ? `<span style="font-size:8px;color:var(--text-sub);">×${countAny}</span>`
-                : '';
-    atkGroups[sym].push({type, badge, warn: bestAll===0});
-  });
-
-  // 受けをグループ化
-  const defGroups = {};
-  defData.forEach(({type,minAll,allWeak,countRes})=>{
-    const {sym} = _defSummarySymCls(minAll);
-    if(!defGroups[sym]) defGroups[sym]=[];
-    const badge = !allWeak && minAll<=0.5 && countRes>1
-      ? `<span style="font-size:8px;color:#88bbff;font-weight:800;">×${countRes}</span>`
-      : '';
-    defGroups[sym].push({type, badge, warn:allWeak});
-  });
-
-  const symOrder = ['☆','◎','○','△','▼','×'];
-  const symCls   = {'☆':'eff-star4','◎':'eff-star2','○':'eff-star1','△':'eff-tri','▼':'eff-dtri','×':'eff-cross'};
-
-  const renderGrp = (groups, note) => {
-    let h='';
-    symOrder.filter(s=>groups[s]).forEach(sym=>{
-      const items = groups[sym];
-      h+=`<div style="display:flex;align-items:flex-start;gap:4px;margin-bottom:4px;">
-        <span class="eff ${symCls[sym]}" style="width:20px;height:16px;font-size:10px;flex-shrink:0;margin-top:1px;">${sym}</span>
-        <div style="display:flex;gap:3px;flex-wrap:wrap;align-items:center;">
-          ${items.map(({type,badge,warn})=>`
-            <span style="display:inline-flex;align-items:center;gap:1px;">
-              <span class="tb t-${type}" style="font-size:9px;padding:1px 4px;${warn?'opacity:0.5;':''}">${type}</span>
-              ${badge}
-            </span>
-          `).join('')}
-        </div>
-      </div>`;
-    });
-    if(!h) h=`<div style="font-size:9px;color:var(--text-sub);">データなし</div>`;
-    return h;
-  };
-
-  const selLabel = showAll
-    ? `全${rows.length}体`
-    : rows.map(({p,i})=>p.name||`自分${i+1}`).join('・');
-
-  // 凡例
-  const legend = rows.length>1 ? `
-    <div style="font-size:9px;color:var(--text-sub);margin-top:6px;padding-top:4px;border-top:1px solid var(--border);">
-      数字バッジ = 対応できる人数 (攻め:×2以上 / 受け:½以下の人数) ／ ⚠️ = 全員弱点
-    </div>` : '';
-
-  el.innerHTML = `
-    <div style="font-size:10px;color:var(--text-sub);margin-bottom:6px;padding:4px 0;border-bottom:1px solid var(--border);">
-      集計対象: <span style="color:var(--accent);font-weight:800;">${selLabel}</span>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <div>
-        <div style="font-size:10px;font-weight:800;color:#ff8800;margin-bottom:5px;">⚔️ 攻め</div>
-        ${renderGrp(atkGroups)}
-      </div>
-      <div>
-        <div style="font-size:10px;font-weight:800;color:#6890f0;margin-bottom:5px;">🛡️ 受け</div>
-        ${renderGrp(defGroups)}
-      </div>
-    </div>
-    ${legend}`;
-}
-
-// ============================================================
-// 素早さタブ
-// ============================================================
-
-// ---- CSS (動的に追加) ----
-(function(){
-  const s = document.createElement('style');
-  s.textContent = `
-    .spd-pattern-lbl{display:inline-flex;align-items:center;gap:3px;font-size:10px;
-      color:var(--text-sub);cursor:pointer;background:var(--surface);
-      border:1px solid var(--border);border-radius:5px;padding:2px 6px;}
-    .spd-pattern-lbl input{accent-color:var(--accent);}
-    .spd-input-card{background:var(--surface);border:1px solid var(--border);
-      border-radius:var(--radius);padding:4px 4px;display:flex;flex-direction:column;gap:3px;
-      min-width:0;overflow:hidden;}
-    .spd-poke-name{font-size:clamp(8px,2.2vw,11px);font-weight:800;color:var(--text);
-      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .spd-name-input{width:100%;background:var(--surface2);border:1px solid var(--border);
-      color:var(--text);border-radius:5px;padding:2px 3px;
-      font-size:clamp(8px,2.5vw,10px);font-family:var(--font);outline:none;min-width:0;}
-    .spd-lbl{font-size:8px;color:var(--text-sub);font-weight:700;margin-bottom:1px;}
-    .spd-nature-row{display:flex;gap:2px;}
-    .spd-nat-btn2{padding:2px 5px;border-radius:4px;font-size:9px;font-weight:800;
-      border:1px solid var(--border);background:var(--surface2);color:var(--text-sub);
-      cursor:pointer;font-family:var(--font);}
-    .spd-nat-btn2.act-up{background:#e05555;color:#fff;border-color:#e05555;}
-    .spd-nat-btn2.act-pm{background:var(--surface2);color:var(--text);border-color:var(--accent2);}
-    .spd-nat-btn2.act-dn{background:#3d7dca;color:#fff;border-color:#3d7dca;}
-    /* 素早さカード内の性格ボタン */
-    .spd-nat-btn{flex:1;padding:2px 0;border-radius:4px;font-size:9px;font-weight:800;
-      border:1px solid var(--border);background:var(--surface2);color:var(--text-sub);
-      cursor:pointer;font-family:var(--font);}
-    .spd-nat-btn.act-up{background:#e05555;color:#fff;border-color:#e05555;}
-    .spd-nat-btn.act-pm{background:var(--surface2);color:var(--text);border-color:var(--accent2);}
-    .spd-nat-btn.act-dn{background:#3d7dca;color:#fff;border-color:#3d7dca;}
-    .spd-sp-row{display:flex;align-items:center;gap:2px;}
-    .spd-sp-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text-sub);
-      border-radius:4px;padding:1px 5px;font-size:10px;cursor:pointer;font-family:var(--font);flex-shrink:0;}
-    .spd-sp-btn:active{background:var(--accent2);color:#fff;}
-    .spd-sp-val{flex:1;text-align:center;font-size:10px;font-weight:800;color:var(--text);
-      background:var(--bg);border:1px solid var(--border);border-radius:4px;
-      padding:1px 2px;min-width:0;}
-    .spd-toggle{display:flex;align-items:center;gap:3px;font-size:9px;color:var(--text-sub);cursor:pointer;}
-    .spd-toggle input{accent-color:var(--accent);}
-    .spd-rank-row{display:flex;align-items:center;gap:3px;}
-    .spd-rank-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);
-      border-radius:4px;padding:1px 6px;font-size:11px;cursor:pointer;font-family:var(--font);}
-    .spd-rank-btn:active{background:var(--accent);color:#111;}
-    .spd-rank-val{font-size:10px;font-weight:800;color:var(--accent);min-width:22px;text-align:center;}
-    .spd-result{font-size:10px;font-weight:800;color:var(--accent);text-align:center;
-      margin-top:2px;background:rgba(255,203,5,0.08);border-radius:4px;padding:2px;}
-    /* 予測変換 */
-    .spd-name-wrap{position:relative;width:100%;}
-    .spd-suggest{position:absolute;z-index:100;background:var(--surface);
-      border:1px solid var(--border);border-radius:6px;width:100%;
-      max-height:120px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
-    .spd-suggest-item{padding:5px 8px;font-size:11px;cursor:pointer;color:var(--text);
-      display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);}
-    .spd-suggest-item:hover{background:var(--surface2);}
-    .spd-bar-row{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
-    .spd-bar-label{font-size:9px;font-weight:800;min-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .spd-bar-track{flex:1;height:14px;background:var(--surface2);border-radius:4px;
-      position:relative;overflow:hidden;}
-    .spd-bar-fill{position:absolute;top:0;left:0;height:100%;border-radius:4px;}
-    .spd-bar-tag{position:absolute;top:0;height:100%;display:flex;align-items:center;
-      justify-content:center;font-size:7px;font-weight:800;color:#fff;
-      border-radius:3px;padding:0 2px;white-space:nowrap;min-width:14px;}
-    .spd-bar-val{font-size:9px;font-weight:800;color:var(--text);min-width:30px;text-align:right;}
-    /* ブロック表示 */
-    .spd-block-row{display:flex;align-items:center;gap:4px;margin-bottom:3px;min-height:22px;}
-    .spd-block-name{font-size:9px;font-weight:800;min-width:54px;max-width:54px;
-      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;}
-    .spd-block-grid{flex:1;display:flex;gap:1px;position:relative;}
-    .spd-block-cell{height:20px;border-radius:3px;display:flex;align-items:center;
-      justify-content:center;font-size:8px;font-weight:800;color:#fff;
-      white-space:nowrap;padding:0 2px;flex-shrink:0;}
-    .spd-block-val{font-size:9px;color:var(--text-sub);min-width:32px;text-align:right;flex-shrink:0;}
-    /* 先制判定 */
-    .spd-judge-row{display:flex;align-items:center;gap:6px;padding:4px 6px;
-      border-radius:6px;margin-bottom:3px;font-size:10px;}
-    .spd-win{background:rgba(76,175,130,0.12);color:var(--good);}
-    .spd-lose{background:rgba(224,85,85,0.10);color:var(--bad);}
-    .spd-draw{background:rgba(255,203,5,0.08);color:var(--accent);}
-  `;
-  document.head.appendChild(s);
-})();
-
-// ---- データ ----
 let _spdInputOpen = true;
 
 // 自分3体の状態
@@ -8261,10 +7834,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <span class="bnav-icon">📋</span>
     <span class="bnav-label">一覧表</span>
   </button>
-  <button class="bnav-item" data-tab="builder" onclick="switchMainTab('builder')">
-    <span class="bnav-icon">🏗</span>
-    <span class="bnav-label">作成</span>
-  </button>
+
 </div>
 </body>
 </html>
