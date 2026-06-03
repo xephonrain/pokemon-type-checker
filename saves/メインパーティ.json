@@ -196,12 +196,12 @@
           "name": ""
         }
       ],
-      "hpSp": 32,
+      "hpSp": 2,
       "atkSp": 0,
       "atkNat": -1,
       "defSp": 0,
       "defNat": 0,
-      "spaSp": 2,
+      "spaSp": 32,
       "spaNat": 0,
       "spdSp": 0,
       "spdNat": 0,
