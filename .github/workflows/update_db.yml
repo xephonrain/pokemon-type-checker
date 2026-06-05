@@ -1,56 +1,41 @@
-```yaml
-name: ポケモンDB自動更新
+```yaml id="x8kzzs"
+name: Pokemon DB Update
 
 on:
-  schedule:
-    - cron: '0 0 * * 1' # 毎週月曜 9:00 JST
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 1'
 
 jobs:
   update-db:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Step1 - 種族値取得
+      - name: Step1
         run: python collect_pokemon_base.py
 
-      - name: Step2 - 技取得
+      - name: Step2
         run: python collect_pokemon_moves.py
 
-      - name: Step3 - 技DB取得
+      - name: Step3
         run: python collect_move_db.py
 
-      - name: Step4 - 持ち物・性格使用率取得
+      - name: Step4
         run: python collect_pokemon_usage.py
 
-      - name: Step5 - DB構築
+      - name: Step5
         run: python build_db.py
 
-      - name: Step6 - HTMLに反映
+      - name: Step6
         run: python apply_db_output.py
-
-      - name: Commit and Push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add index.html
-
-          if git diff --staged --quiet; then
-            echo "変更なし。スキップします。"
-          else
-            git commit -m "chore: DB自動更新 $(date '+%Y-%m-%d')"
-            git push
-          fi
 ```
