@@ -62,8 +62,14 @@ def main():
         f.write(html)
     print(f"バックアップ: {bak}")
 
-    # 差し替え
+    # 差し替え + DB_UPDATED を反映
+    import re as _re
+    db_updated_m = _re.search(r'const DB_UPDATED="([^"]+)";', new_db_block)
     new_html = html[:start] + new_db_block + '\n' + html[end:]
+    if db_updated_m:
+        updated_val = db_updated_m.group(1)
+        new_html = _re.sub(r'const DB_UPDATED="[^"]*";', f'const DB_UPDATED="{updated_val}";', new_html, count=1)
+        print(f"DB更新日: {updated_val}")
     with open(args.html, 'w', encoding='utf-8') as f:
         f.write(new_html)
 
