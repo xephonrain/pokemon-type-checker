@@ -75,6 +75,10 @@ def main():
 
     # JavaScript 出力
     lines = []
+    from datetime import date
+    today = date.today().strftime('%Y-%m-%d')
+    lines.append(f'const DB_UPDATED="{today}";')
+    lines.append('')
     lines.append('// ============================================================')
     lines.append('// POKEMON_DB + MOVE_DB')
     lines.append('// このブロックをまるごと index.html の該当箇所に貼り付けてください')
