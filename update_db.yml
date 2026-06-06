@@ -2,12 +2,14 @@ name: ポケモンDB自動更新
 
 on:
   schedule:
-    - cron: '0 0 * * 1'  # 毎週月曜 9:00 JST
-  workflow_dispatch:      # 手動実行
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
 
 jobs:
   update-db:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -36,8 +38,8 @@ jobs:
       - name: Step5 - DB構築
         run: python build_db.py
 
-      - name: Step6 - HTMLに反映
-        run: python apply_db_output.py
+      - name: Step6 - index.htmlに反映
+        run: python apply_db_output.py --html index.html
 
       - name: Commit and Push
         run: |
