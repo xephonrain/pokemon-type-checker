@@ -15,7 +15,7 @@ import sys, os, re, argparse
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--txt',  default='pokemon_db_output.txt')
-    parser.add_argument('--html', default='pokemon_type_checker.html')
+    parser.add_argument('--html', default='index.html')
     args = parser.parse_args()
 
     if not os.path.exists(args.txt):
