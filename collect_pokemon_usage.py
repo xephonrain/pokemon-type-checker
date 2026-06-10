@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
 """
-ポケモンチャンピョンズ 持ち物・性格使用率TOP3を収集
+ポケモンチャンピョンズ 使用率データ収集
+- 持ち物TOP3
+- 性格TOP3
+- 特性TOP3
+- 技TOP6（全技種）
+- 能力ポイント TOP1配分
 
 使用方法:
   pip install requests beautifulsoup4
   python collect_pokemon_usage.py
 
 出力:
-  pokemon_usage.json → {
-    "ガブリアス": {
-      "items":   ["こだわりスカーフ", "きあいのタスキ", "とつげきチョッキ"],
-      "natures": ["ようき", "いじっぱり", "おくびょう"]
-    }, ...
-  }
-
-前提:
-  collect_pokemon_base.py を先に実行して poke_numbers.json を生成しておく
+  pokemon_usage.json
 """
 
 import requests, json, re, time, os
@@ -40,14 +37,89 @@ def fetch(url, retries=3):
             time.sleep(2)
     return None
 
-def parse_usage(soup):
+def extract_top_n(section, label, n=3):
+    """sectionからlabelのTOPn件をリストで返す"""
+    h3 = None
+    for tag in section.find_all(["h2","h3"]):
+        if label in tag.get_text():
+            h3 = tag
+            break
+    if not h3:
+        return []
+    items = []
+    nxt = h3.find_next_sibling()
+    while nxt and nxt.name not in ["h2","h3"]:
+        a = nxt.find("a")
+        if a:
+            name = a.get_text(strip=True)
+            if name and name not in items:
+                items.append(name)
+        if len(items) >= n:
+            break
+        nxt = nxt.find_next_sibling()
+    return items
+
+def extract_sp_top1(section):
     """
-    ページから持ち物TOP3・性格TOP3を取得
-    戻り値: {フォーム名_or_メイン名: {items:[...], natures:[...]}}
+    能力ポイント TOP1配分を取得
+    例: {h:2, a:32, b:0, c:0, d:0, s:32}
+    """
+    h3 = None
+    for tag in section.find_all(["h2","h3"]):
+        if "能力ポイント" in tag.get_text():
+            h3 = tag
+            break
+    if not h3:
+        return None
+
+    # テーブルを探す
+    tbl = h3.find_next("table")
+    if not tbl:
+        return None
+
+    # ヘッダー行からカラム順を取得
+    header_row = tbl.find("tr")
+    if not header_row:
+        return None
+    headers = [th.get_text(strip=True).lower() for th in header_row.find_all(["th","td"])]
+
+    # H A B C D S のカラムインデックスを特定
+    stat_keys = ['h','a','b','c','d','s']
+    stat_map = {}  # key -> col_index
+    for key in stat_keys:
+        for ci, h in enumerate(headers):
+            if h == key:
+                stat_map[key] = ci
+                break
+
+    if not stat_map:
+        return None
+
+    # 最初のデータ行（TOP1）を取得
+    rows = tbl.find_all("tr")[1:]  # ヘッダー除外
+    if not rows:
+        return None
+
+    cells = rows[0].find_all(["td","th"])
+    sp = {}
+    for key, ci in stat_map.items():
+        if ci < len(cells):
+            val = cells[ci].get_text(strip=True)
+            # '·' や '-' は0扱い
+            try:
+                sp[key] = int(val) if val.isdigit() else 0
+            except:
+                sp[key] = 0
+    return sp if sp else None
+
+def parse_usage(soup, num):
+    """
+    ページから使用率データを全取得
+    戻り値: {ポケモン名: {items, natures, abilities, moves, topSp, ...}}
     """
     result = {}
 
-    # h1からメインポケモン名を取得
+    # ポケモン名取得
     main_name = None
     h1 = soup.find("h1")
     if h1:
@@ -55,74 +127,75 @@ def parse_usage(soup):
     if not main_name:
         return result
 
-    # 「使用率データ...シングル」セクションを全取得
+    # 「よく使われる技」セクション（ページ全体から取得）
+    def extract_moves_global():
+        """ページの「よく使われる技」リンクを全取得（TOP6）"""
+        moves = []
+        for a in soup.find_all("a", href=True):
+            href = a.get("href", "")
+            if "/ranking/lists/move/" in href:
+                name = a.get_text(strip=True)
+                # パーセント表記を除去
+                name = re.sub(r'\d+\.\d+%', '', name).strip()
+                if name and name not in moves:
+                    moves.append(name)
+            if len(moves) >= 6:
+                break
+        return moves
+
+    # 「使用率」セクションを探す（ページ全体）
+    # セクションタグで探す
     usage_sections = []
     for section in soup.find_all("section"):
-        h2 = section.find("h2")
-        if h2 and "使用率データ" in h2.get_text() and "シングル" in h2.get_text():
-            usage_sections.append(section)
+        h2 = section.find(["h2","h3"])
+        if h2 and ("使用率" in h2.get_text() or "バトルデータ" in h2.get_text()):
+            if "シングル" in section.get_text() or True:
+                usage_sections.append(section)
 
+    # セクションが見つからない場合はページ全体を1セクションとして処理
     if not usage_sections:
-        return result
+        usage_sections = [soup]
 
-    def extract_top3(section, label):
-        """sectionからlabel(例:'持ち物')のTOP3を取得"""
-        h3 = section.find("h3", string=label)
-        if not h3:
-            # 部分一致で探す
-            for tag in section.find_all("h3"):
-                if label in tag.get_text():
-                    h3 = tag
-                    break
-        if not h3:
-            return []
-        items = []
-        nxt = h3.find_next_sibling()
-        while nxt and nxt.name != "h3":
-            a = nxt.find("a")
-            if a:
-                name = a.get_text(strip=True)
-                if name and name not in items:
-                    items.append(name)
-            if len(items) >= 3:
-                break
-            nxt = nxt.find_next_sibling()
-        return items
-
-    # セクションが1つの場合
-    if len(usage_sections) == 1:
-        sec = usage_sections[0]
-        result[main_name] = {
-            "items":   extract_top3(sec, "持ち物"),
-            "natures": extract_top3(sec, "性格"),
+    def parse_section(sec, name):
+        data = {
+            "items":    extract_top_n(sec, "持ち物", 3),
+            "natures":  extract_top_n(sec, "性格",   3),
+            "abilities": extract_top_n(sec, "特性",  3),
+            "moves":    extract_top_n(sec, "よく使われる技", 6),
+            "topSp":    extract_sp_top1(sec),
         }
+        # movesが空ならページ全体から取得
+        if not data["moves"]:
+            data["moves"] = extract_moves_global()
+        return data
+
+    if len(usage_sections) == 1:
+        data = parse_section(usage_sections[0], main_name)
+        if any(data.values()):
+            result[main_name] = data
         return result
 
-    # 複数フォームの場合
+    # 複数フォーム
     for sec in usage_sections:
-        # セクション直前のh2/h3からポケモン名を推定
         poke_name = main_name
-        for prev in sec.find_all_previous(["h2", "h3"]):
+        for prev in sec.find_all_previous(["h2","h3"]):
             txt = prev.get_text(strip=True)
-            if "使用率データ" in txt:
+            if "使用率" in txt or "バトルデータ" in txt:
                 break
             if re.search(r'[ぁ-んァ-ヶ一-龥]', txt) and 2 <= len(txt) <= 20:
-                if not any(ex in txt for ex in ["種族値","特性","覚える技","進化","能力"]):
+                if not any(ex in txt for ex in ["種族値","特性","技","進化","能力","タイプ"]):
                     poke_name = txt
                     break
-        result[poke_name] = {
-            "items":   extract_top3(sec, "持ち物"),
-            "natures": extract_top3(sec, "性格"),
-        }
+        data = parse_section(sec, poke_name)
+        if any(v for v in data.values() if v):
+            result[poke_name] = data
 
     return result
 
 
 def main():
-    # poke_numbers.json から番号リストを読み込む
     if not os.path.exists("poke_numbers.json"):
         print("ERROR: poke_numbers.json が見つかりません")
-        print("先に collect_pokemon_base.py を実行してください")
         return
 
     with open("poke_numbers.json", encoding="utf-8") as f:
@@ -141,13 +214,14 @@ def main():
             print("スキップ")
             continue
 
-        found = parse_usage(soup)
+        found = parse_usage(soup, num)
         if found:
             for name, data in found.items():
                 result[name] = data
-                items_str   = ",".join(data["items"][:2])   if data["items"]   else "なし"
-                natures_str = ",".join(data["natures"][:2]) if data["natures"] else "なし"
-                print(f"{name} 持:{items_str} 性:{natures_str}")
+                moves_str = ",".join(data["moves"][:3]) if data["moves"] else "なし"
+                items_str = ",".join(data["items"][:2]) if data["items"] else "なし"
+                sp_str    = str(data["topSp"]) if data["topSp"] else "なし"
+                print(f"{name} 技:{moves_str} 持:{items_str} SP:{sp_str}")
         else:
             print("データなし")
 
@@ -158,11 +232,15 @@ def main():
 
     print(f"\n✓ pokemon_usage.json 保存: {len(result)}体")
 
-    # サンプル表示
-    for name in ["ガブリアス", "ニンフィア", "カバルドン"]:
+    for name in ["ガブリアス", "カバルドン", "ニンフィア"]:
         if name in result:
             d = result[name]
-            print(f"  {name}: 持={d['items']} 性={d['natures']}")
+            print(f"  {name}:")
+            print(f"    技: {d['moves']}")
+            print(f"    持: {d['items']}")
+            print(f"    特性: {d['abilities']}")
+            print(f"    性格: {d['natures']}")
+            print(f"    SP: {d['topSp']}")
 
 if __name__ == "__main__":
     main()
