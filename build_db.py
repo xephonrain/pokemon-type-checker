@@ -66,11 +66,14 @@ def main():
             moves_matched += 1
         else:
             moves_missing += 1
-        # 持ち物・性格の使用率TOP3
+        # 持ち物・性格・特性・技・SPの使用率データ
         if name in usage_dict:
             u = usage_dict[name]
-            if u.get('items'):   entry['topItems']   = u['items'][:3]
-            if u.get('natures'): entry['topNatures']  = u['natures'][:3]
+            if u.get('items'):     entry['topItems']     = u['items'][:3]
+            if u.get('natures'):   entry['topNatures']   = u['natures'][:3]
+            if u.get('abilities'): entry['topAbilities'] = u['abilities'][:3]
+            if u.get('moves'):     entry['moves']        = u['moves'][:6]
+            if u.get('topSp'):     entry['topSp']        = u['topSp']
         entries.append(entry)
 
     # JavaScript 出力
