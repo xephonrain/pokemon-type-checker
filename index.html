@@ -79,6 +79,10 @@
     .section-hdr{display:flex;align-items:center;padding:5px 10px;
       background:var(--surface2);border-bottom:1px solid var(--border);gap:8px;flex-shrink:0;}
     .stitle{font-size:12px;font-weight:800;color:var(--accent);}
+    .fixed-cta{position:fixed;bottom:72px;left:16px;right:16px;height:52px;
+      border-radius:14px;border:none;font-size:16px;font-weight:800;cursor:pointer;
+      font-family:var(--font);z-index:100;display:none;align-items:center;justify-content:center;gap:8px;
+      box-shadow:0 4px 20px rgba(0,0,0,0.35);}
     .reset-btn{background:none;border:1px solid var(--bad);color:var(--bad);
       border-radius:8px;padding:0 12px;font-size:13px;cursor:pointer;font-family:var(--font);
       min-height:44px;display:inline-flex;align-items:center;}
@@ -1140,6 +1144,7 @@ function getImm(p){ return [p.immune1, p.immune2].filter(t=>t&&t!=='なし'); }
 // ============================================================
 function makeEmptyPoke() {
   return {
+  _open: false,
     name:'', type1:'なし', type2:'なし',
     nature:'まじめ',                    // 性格
     ability:'なし',                     // 特性
@@ -1891,11 +1896,41 @@ function _showPanel(panelId) {
   });
 }
 
+function _updateCTA(id) {
+  const btn = document.getElementById('fixed-cta-btn');
+  if(!btn) return;
+  if(id === 'input') {
+    const hasPoke = AppState.myTeam.some(p=>p.name) || AppState.enemyTeam.some(p=>p.name);
+    if(hasPoke) {
+      btn.dataset.target = 'select';
+      btn.style.display = 'flex';
+      btn.style.background = 'var(--accent)';
+      btn.style.color = '#1a1a1a';
+      btn.textContent = '▶ 選出へ進む';
+    } else {
+      btn.style.display = 'none';
+    }
+  } else if(id === 'select') {
+    const hasSel = typeof BattleState!=='undefined' && BattleState.my && BattleState.my.some(x=>x!==null);
+    if(hasSel) {
+      btn.dataset.target = 'battle2';
+      btn.style.display = 'flex';
+      btn.style.background = '#e05555';
+      btn.style.color = '#fff';
+      btn.textContent = '⚔️ バトル開始';
+    } else {
+      btn.style.display = 'none';
+    }
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
 function switchMainTab(id) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===id));
   document.querySelectorAll('.bnav-item').forEach(b => b.classList.toggle('active', b.dataset.tab===id));
   _showPanel('panel-' + id);
-  if(id==='input')   { renderInputTab(); setTimeout(_ispInitAll, 50); }
+  if(id==='input')   { renderInputTab(); setTimeout(_ispInitAll, 50); setTimeout(()=>_updateCTA('input'),120); }
   if(id==='select')  _activateSubTab('select', _subTabState.select||'senbatsu');
   if(id==='battle2') { _subTabState.battle2 = _subTabState.battle2||'battle'; _activateSubTab('battle2', _subTabState.battle2); }
   if(id==='list')    setListMode(_listMode||'poketype');
@@ -3564,7 +3599,7 @@ function renderTeam(cid, team, prefix) {
   const c = document.getElementById(cid); c.innerHTML = '';
   team.forEach((p, i) => {
     const def = prefix==='my' ? `自分${i+1}` : `相手${i+1}`;
-    const isOpen = p._open !== false;
+    const isOpen = p.name ? (p._open !== false) : false;
     const card = document.createElement('div');
     card.className = 'pk-card'; card.id = `card-${prefix}-${i}`;
 
@@ -3900,6 +3935,7 @@ function applyInputPokeName(prefix, idx, name) {
     });
   }
 
+  team[idx]._open = true;
   renderInputTab();
   showToast(`✓ ${name}${poke?' タイプ自動補完':''}`);
 }
@@ -7548,5 +7584,10 @@ window.addEventListener('DOMContentLoaded', () => {
     <span class="bnav-label">一覧表</span>
   </button>
 </div>
+<button id="fixed-cta-btn" onclick="document.getElementById('fixed-cta-btn').dataset.target==='select'?switchMainTab('select'):switchMainTab('battle2')"
+  style="position:fixed;bottom:72px;left:16px;right:16px;height:52px;border-radius:14px;border:none;
+  font-size:16px;font-weight:800;cursor:pointer;font-family:var(--font);z-index:100;display:none;
+  align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,0.35);">
+</button>
 </body>
 </html>
