@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ポケモンタイプ相性チェッカー</title>
 
   <!-- PWA: ホーム画面追加・フルスクリーン対応 -->
@@ -7675,12 +7675,23 @@ window.addEventListener('DOMContentLoaded', () => {
     const hdr = document.getElementById('app-header');
     const nav = document.getElementById('bottom-nav');
     if(!tc||!hdr||!nav) return;
-    const h = window.innerHeight - hdr.offsetHeight - nav.offsetHeight;
+    // キーボード表示時はvisualViewportの高さを使わず初期高さを維持
+    const vh = window._initVH || window.innerHeight;
+    const h = vh - hdr.offsetHeight - nav.offsetHeight;
     tc.style.maxHeight = h + 'px';
   }
+  // 初期の画面高さを記録（キーボード表示前）
+  window._initVH = window.innerHeight;
   fixLayout();
-  window.addEventListener('resize', fixLayout);
-  window.addEventListener('orientationchange', () => setTimeout(fixLayout, 150));
+  // iOSスタンドアロン: input focus時にスクロール調整
+  document.addEventListener('focusin', e => {
+    if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+      setTimeout(() => e.target.scrollIntoView({block:'center', behavior:'smooth'}), 300);
+    }
+  });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => { window._initVH = window.innerHeight; fixLayout(); }, 300);
+  });
   // DB更新日をヘッダーに表示
   const el = document.getElementById('db-updated-label');
   if(el && typeof DB_UPDATED !== 'undefined' && DB_UPDATED !== 'unknown') {
