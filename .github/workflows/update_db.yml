@@ -2,12 +2,14 @@ name: ポケモンDB自動更新
 
 on:
   schedule:
-    - cron: '0 19 * * *'  # 毎日 04:00 JST
-  workflow_dispatch:      # 手動実行
+    - cron: '0 19 * * *'  # 毎日 04:00 JST（UTC 19:00）
+  workflow_dispatch:      # 手動実行も可能
 
 jobs:
   update-db:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -30,14 +32,14 @@ jobs:
       - name: Step3 - 技DB取得
         run: python collect_move_db.py
 
-      - name: Step4 - 持ち物・性格使用率取得
+      - name: Step4 - 使用率取得（持ち物・性格・特性・技・SP）
         run: python collect_pokemon_usage.py
 
       - name: Step5 - DB構築
         run: python build_db.py
 
-      - name: Step6 - HTMLに反映
-        run: python apply_db_output.py
+      - name: Step6 - index.htmlに反映
+        run: python apply_db_output.py --html index.html
 
       - name: Commit and Push
         run: |
@@ -47,6 +49,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "変更なし。スキップします。"
           else
-            git commit -m "chore: DB自動更新 $(date '+%Y-%m-%d')"
+            git commit -m "chore: DB自動更新 $(date '+%Y-%m-%d %H:%M JST' -d '+9 hours')"
             git push
           fi
