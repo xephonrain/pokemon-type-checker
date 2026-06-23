@@ -1,9 +1,9 @@
-name: ポケモンDB自動更新　
+name: ポケモンDB自動更新
 
 on:
   schedule:
     - cron: '0 19 * * *'  # 毎日 04:00 JST（UTC 19:00）
-  workflow_dispatch:       # 手動実行も可能
+  workflow_dispatch:      # 手動実行も可能
 
 jobs:
   update-db:
@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -22,9 +24,6 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Install Playwright browsers
-        run: playwright install chromium --with-deps
 
       - name: Step1 - 種族値取得
         run: python collect_pokemon_base.py
@@ -35,13 +34,13 @@ jobs:
       - name: Step3 - 技DB取得
         run: python collect_move_db.py
 
-      - name: Step4 - 使用率取得（champs.pokedb.tokyo: 技・特性・性格・持物・SP）
+      - name: Step4 - 使用率取得（champs.pokedb.tokyo）
         run: python collect_pokemon_usage.py
 
       - name: Step5 - DB構築
         run: python build_db.py
 
-      - name: Step6 - index.htmlに反映
+      - name: Step6 - HTMLに反映
         run: python apply_db_output.py --html index.html
 
       - name: Commit and Push
@@ -49,9 +48,6 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add index.html
-          if git diff --staged --quiet; then
-            echo "変更なし。スキップします。"
-          else
-            git commit -m "chore: DB自動更新 $(date '+%Y-%m-%d %H:%M JST' -d '+9 hours')"
-            git push
-          fi
+          git diff --staged --quiet && echo "変更なし。スキップします。" && exit 0
+          git commit -m "chore: DB自動更新 $(TZ='Asia/Tokyo' date '+%Y-%m-%d %H:%M JST')"
+          git push origin HEAD:${{ github.ref_name }}
