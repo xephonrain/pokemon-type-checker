@@ -3,7 +3,7 @@ name: ポケモンDB自動更新
 on:
   schedule:
     - cron: '0 19 * * *'  # 毎日 04:00 JST（UTC 19:00）
-  workflow_dispatch:      # 手動実行も可能
+  workflow_dispatch:       # 手動実行も可能
 
 jobs:
   update-db:
@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Install Playwright browsers
+        run: playwright install chromium --with-deps
+
       - name: Step1 - 種族値取得
         run: python collect_pokemon_base.py
 
@@ -32,7 +35,7 @@ jobs:
       - name: Step3 - 技DB取得
         run: python collect_move_db.py
 
-      - name: Step4 - 使用率取得（持ち物・性格・特性・技・SP）
+      - name: Step4 - 使用率取得（champs.pokedb.tokyo: 技・特性・性格・持物・SP）
         run: python collect_pokemon_usage.py
 
       - name: Step5 - DB構築
