@@ -1,4 +1,4 @@
-name: ポケモンDB自動更新
+name: ポケモンDB自動更新　
 
 on:
   schedule:
