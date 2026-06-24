@@ -2,7 +2,7 @@
 """
 ポケモンチャンピョンズ 使用率データ収集
 取得元: https://champs.pokedb.tokyo
-方式: requests + BeautifulSoup（playwright不要）
+方式: requests + BeautifulSoup
 
 使用方法:
   pip install requests beautifulsoup4
@@ -15,7 +15,9 @@
 import requests, json, re, time
 from bs4 import BeautifulSoup
 
-BASE = "https://champs.pokedb.tokyo"
+BASE   = "https://champs.pokedb.tokyo"
+SEASON = 3   # 現在のシーズン番号（毎シーズン更新）
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
@@ -42,7 +44,7 @@ def get_poke_list():
     page = 1
 
     while True:
-        url = f"{BASE}/pokemon/list?rule=0&page={page}"
+        url = f"{BASE}/pokemon/list?season={SEASON}&rule=0&page={page}"
         soup = fetch(url)
         if not soup:
             break
@@ -62,6 +64,7 @@ def get_poke_list():
                 continue
             seen_ids.add(pid)
             name = a.get_text(strip=True)
+            name = re.sub(r'^\d+\s*', '', name).strip()
             if name and not re.match(r'^[\d\s]+$', name):
                 pokemons.append({'id': pid, 'name': name})
                 new_found = True
@@ -84,41 +87,105 @@ def parse_pokemon(soup):
         'topSp':     None,
     }
 
-    lines = [l.strip() for l in soup.get_text(separator='\n').split('\n') if l.strip()]
+    text = soup.get_text(separator='\n')
+    lines = [l.strip() for l in text.split('\n') if l.strip()]
 
-    sections = {'技': 'moves', '特性': 'abilities', '能力補正': 'natures', '持ち物': 'items'}
-    limits   = {'moves': 10, 'abilities': 3, 'natures': 3, 'items': 5}
-    current  = None
+    current = None
+    sp_mode = False
 
     for line in lines:
-        if line in sections:
-            current = sections[line]
+        # セクション検出
+        if line == '技':
+            current = 'moves'
+            sp_mode = False
             continue
-        if line == '能力ポイント':
+        elif line == '特性':
+            current = 'abilities'
+            sp_mode = False
+            continue
+        elif line in ('能力補正', '性格'):
+            current = 'natures'
+            sp_mode = False
+            continue
+        elif line == '持ち物':
+            current = 'items'
+            sp_mode = False
+            continue
+        elif line == '能力ポイント':
             current = 'sp'
+            sp_mode = True
             continue
 
-        if current and current != 'sp':
+        # セクション外はスキップ
+        if current is None:
+            continue
+
+        # 技・持ち物: "名前 XX.X%" パターン
+        if current in ('moves', 'items'):
             m = re.match(r'^(.+?)\s+([\d.]+)%$', line)
             if m:
                 name = m.group(1).strip()
                 if name and not re.match(r'^\d+$', name):
                     lst = result[current]
-                    if len(lst) < limits[current] and name not in lst:
+                    limit = 10 if current == 'moves' else 5
+                    if len(lst) < limit and name not in lst:
                         lst.append(name)
-        elif current == 'sp':
-            if re.search(r'[HABCDShabcds]\s+\d+', line):
+            continue
+
+        # 特性: "名前 XX.X%" or 番号行をスキップ
+        if current == 'abilities':
+            m = re.match(r'^(.+?)\s+([\d.]+)%$', line)
+            if m:
+                name = m.group(1).strip()
+                if name and not re.match(r'^\d+$', name) and '↑' not in name and '↓' not in name:
+                    if len(result['abilities']) < 3 and name not in result['abilities']:
+                        result['abilities'].append(name)
+            continue
+
+        # 性格: "ようき (S↑C↓) XX.X%" パターン
+        if current == 'natures':
+            # "ようき (S↑C↓) 60.4%" 形式
+            m = re.match(r'^([ぁ-ん]+)\s*[\(（].*?[\)）]?\s*([\d.]+)%', line)
+            if not m:
+                # "ようき 60.4%" シンプル形式
+                m = re.match(r'^([ぁ-ん]+)\s+([\d.]+)%', line)
+            if m:
+                name = m.group(1).strip()
+                if len(result['natures']) < 3 and name not in result['natures']:
+                    result['natures'].append(name)
+            continue
+
+        # 能力ポイント: H/A/B/C/D/S + 数値
+        if current == 'sp':
+            if re.search(r'[HABCDShabcds]\s*\d+', line):
                 sp = {"h":0,"a":0,"b":0,"c":0,"d":0,"s":0}
-                for k, v in re.findall(r'([HABCDShabcds])\s+(\d+)', line):
+                for k, v in re.findall(r'([HABCDShabcds])\s*(\d+)', line):
                     sp[k.lower()] = int(v)
-                if 1 <= sum(sp.values()) <= 128:
+                total = sum(sp.values())
+                if 1 <= total <= 128:
                     result['topSp'] = sp
                     current = None
+            continue
 
     return result
 
+def get_latest_season():
+    """最新シーズン番号を自動取得"""
+    soup = fetch(f"{BASE}/pokemon/list?rule=0")
+    if not soup:
+        return SEASON
+    # season=X のリンクから最大値を取得
+    seasons = re.findall(r'season=(\d+)', soup.get_text())
+    if seasons:
+        return max(int(s) for s in seasons)
+    return SEASON
+
 def main():
     print("=== champs.pokedb.tokyo から使用率データ取得 ===\n")
+
+    # 最新シーズンを自動検出
+    season = get_latest_season()
+    print(f"シーズン: M-{season}\n")
 
     pokemons = get_poke_list()
     if not pokemons:
@@ -131,7 +198,7 @@ def main():
     for idx, poke in enumerate(pokemons):
         pid  = poke['id']
         name = poke['name']
-        url  = f"{BASE}/pokemon/show/{pid}?rule=0"
+        url  = f"{BASE}/pokemon/show/{pid}?season={season}&rule=0"
         print(f"[{idx+1}/{total}] {name} ({pid}) ...", end=" ", flush=True)
 
         soup = fetch(url)
@@ -154,10 +221,15 @@ def main():
 
     print(f"\n完了: {len(result)}体 → pokemon_usage.json")
 
-    for name in ["ガブリアス", "ミミッキュ", "アーマーガア"]:
-        if name in result:
-            d = result[name]
-            print(f"  {name}: 技{d['moves'][:3]} 持{d['items'][:2]} SP:{d['topSp']}")
+    for check_name in ["ガブリアス", "ミミッキュ", "アーマーガア"]:
+        if check_name in result:
+            d = result[check_name]
+            print(f"\n  {check_name}:")
+            print(f"    技:   {d['moves'][:5]}")
+            print(f"    持物: {d['items'][:3]}")
+            print(f"    特性: {d['abilities']}")
+            print(f"    性格: {d['natures']}")
+            print(f"    SP:   {d['topSp']}")
 
 if __name__ == "__main__":
     main()
