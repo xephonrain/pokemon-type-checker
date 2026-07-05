@@ -34,8 +34,8 @@ jobs:
       - name: Step3 - 技DB取得
         run: python collect_move_db.py
 
-      - name: Step4 - 使用率取得（champs.pokedb.tokyo）
-        run: python collect_pokemon_usage.py
+      # Step4（使用率）はVPSで実行してpokemon_usage.jsonをプッシュ済みのため不要
+      # VPS側: python collect_pokemon_usage.py && python push_usage_to_github.py
 
       - name: Step5 - DB構築
         run: python build_db.py
