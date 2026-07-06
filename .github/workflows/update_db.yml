@@ -2,7 +2,7 @@ name: ポケモンDB自動更新
 
 on:
   schedule:
-    - cron: '0 19 * * *'  # 毎日 04:00 JST（UTC 19:00）
+
   workflow_dispatch:
 
 jobs:
